@@ -10,7 +10,8 @@
     "format": "prettier --write",
     "format:all": "prettier --write .",
     "textlint": "textlint",
-    "textlint:fix": "textlint --fix"
+    "textlint:fix": "textlint --fix",
+    "textlint:all": "textlint ./articles ./books"
   },
   "repository": {
     "type": "git",
@@ -49,5 +50,9 @@
     ],
     "./**/*.{json,yaml,yml}": "yarn format"
   },
-  "prettier": {}
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 120,
+    "tabWidth": 2
+  }
 }
