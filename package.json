@@ -6,7 +6,12 @@
   "scripts": {
     "preview": "npx zenn preview",
     "article": "npx zenn new:article",
-    "article:slug": "npx zenn new:article --slug"
+    "article:slug": "npx zenn new:article --slug",
+    "format": "prettier --write",
+    "format:all": "prettier --write .",
+    "textlint": "textlint",
+    "textlint:fix": "textlint --fix",
+    "textlint:all": "textlint ./articles ./books"
   },
   "repository": {
     "type": "git",
@@ -21,5 +26,33 @@
   "homepage": "https://github.com/necocoa/zenn-contents#readme",
   "dependencies": {
     "zenn-cli": "^0.1.72"
+  },
+  "devDependencies": {
+    "husky": "^5.0.9",
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.2.1",
+    "textlint": "^11.8.2",
+    "textlint-filter-rule-comments": "^1.2.2",
+    "textlint-rule-preset-ja-spacing": "^2.0.2",
+    "textlint-rule-preset-ja-technical-writing": "^4.0.1",
+    "textlint-rule-prh": "^5.3.0",
+    "textlint-rule-spellcheck-tech-word": "^5.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "./**/*.{md}": [
+      "yarn format",
+      "yarn textlint:fix"
+    ],
+    "./**/*.{json,yaml,yml}": "yarn format"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 120,
+    "tabWidth": 2
   }
 }
