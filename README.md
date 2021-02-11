@@ -24,7 +24,7 @@ yarn preview
 yarn article
 ```
 
-記事のURLの一部となるslugを指定して作成することもできます。
+記事の URL の一部となる slug を指定して作成できます。
 
 ```sh
 yarn article:slug article-slug
