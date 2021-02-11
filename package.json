@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "Zennのコンテンツを管理",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "preview": "npx zenn preview",
+    "article": "npx zenn new:article",
+    "article:slug": "npx zenn new:article --slug"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/necocoa/zenn-contents.git"

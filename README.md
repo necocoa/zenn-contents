@@ -10,20 +10,22 @@ Node version: 14.15.4
 
 ## Getting start
 
+### プレビューモード
+
 ```sh
-npx zenn preview
+npm run preview
 ```
 
 👀 Preview on http://localhost:8000
 
-記事の作成
+### 記事の作成
 
 ```sh
-npx zenn new:article
+npm run article
 ```
 
 記事のURLの一部となるslugを指定して作成することもできます。
 
 ```sh
-npx zenn new:article --slug article-slug
+npm run article:slug article-slug
 ```
