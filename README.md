@@ -14,7 +14,7 @@ Node version: 14.15.4
 ### プレビューモード
 
 ```sh
-yarn preview
+npm run preview
 ```
 
 👀 Preview on http://localhost:8000
@@ -22,11 +22,11 @@ yarn preview
 ### 記事の作成
 
 ```sh
-yarn article
+npm run article
 ```
 
 記事の URL の一部となる slug を指定して作成できます。
 
 ```sh
-yarn article:slug article-slug
+npm run article:slug article-slug
 ```
