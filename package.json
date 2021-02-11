@@ -6,7 +6,9 @@
   "scripts": {
     "preview": "npx zenn preview",
     "article": "npx zenn new:article",
-    "article:slug": "npx zenn new:article --slug"
+    "article:slug": "npx zenn new:article --slug",
+    "textlint": "textlint",
+    "textlint:fix": "textlint --fix"
   },
   "repository": {
     "type": "git",
