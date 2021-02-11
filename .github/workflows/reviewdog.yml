@@ -28,14 +28,8 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build
-        run: npm build
-
-      - name: textlint-github-pr-review
-        uses: tsuyoshicho/action-textlint@v1
+      - name: Run textlint
+        uses: tsuyoshicho/action-textlint@v3
         with:
           github_token: ${{ secrets.github_token }}
           textlint_flags: 'articles/**'
