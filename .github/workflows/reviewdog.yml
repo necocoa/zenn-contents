@@ -1,16 +1,21 @@
 name: reviewdog
 
-on: [pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   textlint:
-    name: runner / textlint
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
         with:
-          submodules: true
+          node-version: '14'
+
       - name: textlint-github-pr-review
         uses: tsuyoshicho/action-textlint@v1
         with:
