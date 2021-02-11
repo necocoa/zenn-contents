@@ -28,7 +28,8 @@
       "rulePaths" :[
         "rules.yml"
       ]
-    }
+    },
+    "spellcheck-tech-word": true
   },
   "filters": {
     "comments": true
