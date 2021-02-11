@@ -1,0 +1,25 @@
+{
+  "name": "zenn_contents",
+  "version": "1.0.0",
+  "description": "Zennのコンテンツを管理",
+  "main": "index.js",
+  "scripts": {
+    "preview": "npx zenn preview",
+    "article": "npx zenn new:article",
+    "article:slug": "npx zenn new:article --slug"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/necocoa/zenn-contents.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/necocoa/zenn-contents/issues"
+  },
+  "homepage": "https://github.com/necocoa/zenn-contents#readme",
+  "dependencies": {
+    "zenn-cli": "^0.1.72"
+  }
+}
