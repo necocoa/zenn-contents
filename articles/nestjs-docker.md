@@ -1,10 +1,12 @@
 ---
-title: 'NestJSをDistrolessを使った今ドキのDocker本番環境で作った'
-emoji: '🦔'
+title: 'Distrolessを使った2021年最新のDocker環境を試した[Node.js/NestJS]'
+emoji: '🐱'
 type: 'tech'
-topics: ['nestjs', 'docker']
+topics: ['docker', 'nodejs', 'nestjs']
 published: false
 ---
+
+今回は NestJS を使っていますが、ビルド後のファイルと node_modules を使っているだけなので、express や他の FW でも同様にできると思います。
 
 ## Distroless とは？
 
