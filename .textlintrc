@@ -8,10 +8,6 @@
   },
   "rules": {
     "preset-ja-technical-writing": {
-      "no-exclamation-question-mark": {
-        "allowFullWidthExclamation": true,
-        "allowFullWidthQuestion": true
-      },
       "sentence-length": {
         "max": 120
       },
@@ -26,6 +22,7 @@
           ":"
         ]
       },
+      "no-exclamation-question-mark": false,
       "ja-no-weak-phrase": false
     },
     "preset-ja-spacing": {
