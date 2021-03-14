@@ -6,9 +6,27 @@ topics: ['nestjs', 'docker']
 published: false
 ---
 
-Distroless を使う理由はこちらの記事が参考になるので、気になる方はこちらを参照してください。
+## Distroless とは？
+
+Google 製の Docker イメージです。
+
+https://github.com/GoogleContainerTools/distroless
+
+> アプリケーションとそのランタイムの依存関係だけが含まれています。
+
+本番環境に特化したイメージであり、ランタイムに不要なプログラム（シェルなど）を含まないのでパフォーマンスの向上・セキュリティ向上が見込めます。
+
+また alpine ではなく Distroless を使う理由はこちらの記事が参考になるので、気になる方はこちらを参照してください。
 Distroless で本番環境を作ろうとなったきっかけの記事でもあります。
 https://blog.inductor.me/entry/alpine-not-recommended
+
+## 結果
+
+| 削減対策無し slim | マルチビルド slim | マルチビルド distroless |
+| :---------------: | :---------------: | :---------------------: |
+|     667.66 MB     |     177.56 MB     |        129.1 MB         |
+
+イメージサイズを削減しつつ、ランタイムに不要な最小限の構成になったことでセキュリティも上がった。
 
 ## 今回の環境バージョン
 
@@ -20,9 +38,9 @@ $ yarn -v
 1.22.10
 ```
 
-## NestJS で HelloWorld を表示する
+## NestJS で Hello World! を表示する
 
-公式の Introduction に沿って HelloWorld が表示するまで作成します。
+公式の Introduction に沿って Hello World! が表示するまで作成します。
 https://docs.nestjs.com/
 
 ```
@@ -107,17 +125,13 @@ $ nest start
 
 <!-- textlint-enable -->
 
-[http://localhost:3000](http://localhost:3000) をブラウザで開いて `Hello World!` が表示されたら完了です。
-
-```
-Hello World!
-```
+[http://localhost:3000](http://localhost:3000) を開いて Hello World! が表示されたら完了です。
 
 ## Docker 環境を作る
 
 ### Dockerfile の作成
 
-`Dockerfile` と `.dockerignore` ファイルを作成します。
+`Dockerfile` と `.dockerignore` のファイルを作成します。
 
 ```
 touch Dockerfile
@@ -177,9 +191,9 @@ node_modules/
 dist/
 ```
 
-### イメージをビルドする
+### イメージをビルド
 
-作成した `Dockerfile` をビルドしましょう。
+作成した `Dockerfile` をビルドします。
 
 ```sh
 docker build --tag nestjs-docker .
@@ -225,11 +239,11 @@ docker build --tag nestjs-docker .
 
 ![](https://storage.googleapis.com/zenn-user-upload/53kot48bm59jg6ifif5qocwzqa7x)
 
-### ビルドしたイメージを実行する
+### イメージを実行
 
 <!-- textlint-disable ja-technical-writing/ja-no-redundant-expression -->
 
-ビルドしたイメージを実行しましょう。
+ビルドしたイメージを実行します。
 
 <!-- textlint-enable -->
 
@@ -237,18 +251,12 @@ docker build --tag nestjs-docker .
 docker run -d -p 3000:3000 --name nestjs-docker nestjs-docker
 ```
 
-[http://localhost:3000](http://localhost:3000) をブラウザで表示し `Hello World!` が表示されたら成功です。
+[http://localhost:3000](http://localhost:3000) を開いて Hello World! が表示されたら成功です。
 
-```
-Hello World!
-```
+### 削減対策をしない slim 環境
 
-```sh
-docker start nestjs-docker
-docker stop nestjs-docker
-```
-
-### イメージ対策をしない slim 環境
+シングルステージでのビルドです。
+ランタイムに不要なパッケージなど含まれるのでイメージサイズが大きいです。
 
 :::details Dockerfile
 
@@ -273,9 +281,10 @@ CMD ["yarn", "start:prod"]
 
 ![](https://storage.googleapis.com/zenn-user-upload/stdqe59sey9aj8v4nijtiek5hec8)
 
-`538.56 MB`のイメージサイズ削減ができた。
+### マルチステージビルドでの slim 環境
 
-### マルチビルドでイメージ対策をした slim 環境
+マルチステージビルドを使いランタイムに必要なプログラムのみをイメージに含めています。
+`yarn` や `sh` など本番では使わないプログラムが含まれるため Distroless と比べると少しサイズが大きいですね。
 
 :::details Dockerfile
 
@@ -324,8 +333,18 @@ CMD ["node", "dist/main"]
 
 ![](https://storage.googleapis.com/zenn-user-upload/k0n7oezlz126e05r3c7eaoogn3c5)
 
-`48.46 MB`のイメージサイズ削減ができた。
+## まとめ
 
-| 削減対策無し |   slim    | distroless |
-| :----------: | :-------: | :--------: |
-|  667.66 MB   | 177.56 MB |  129.1 MB  |
+| 削減対策無し slim | マルチビルド slim | マルチビルド distroless |
+| :---------------: | :---------------: | :---------------------: |
+|     667.66 MB     |     177.56 MB     |        129.1 MB         |
+
+- 減対策無し slim と比較し `538.56 MB` のイメージサイズ削減
+- マルチビルド slim と比較し `48.46 MB` のイメージサイズ削減
+
+イメージサイズが小さくなるのはとても楽しいですね！
+マルチステージビルドは使っていたのですが Distroless は知らなかったので積極的に使っていこうと思います。
+
+Distroless にはシェルが含まれていないため、アタッチしてデバッグする際はデバッグ用のイメージを使いましょう！
+
+`gcr.io/distroless/nodejs:debug`
