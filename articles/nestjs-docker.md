@@ -347,6 +347,4 @@ CMD ["node", "dist/main"]
 イメージサイズが小さくなるのはとても楽しいですね！
 マルチステージビルドは使っていたのですが Distroless は知らなかったので積極的に使っていこうと思います。
 
-Distroless にはシェルが含まれていないため、アタッチしてデバッグする際はデバッグ用のイメージを使いましょう！
-
-`gcr.io/distroless/nodejs:debug`
+Distroless にはシェルが含まれていないため、アタッチしてデバッグする際はデバッグ用のイメージ `gcr.io/distroless/nodejs:debug` を使いましょう！
