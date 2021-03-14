@@ -348,3 +348,8 @@ CMD ["node", "dist/main"]
 マルチステージビルドは使っていたのですが Distroless は知らなかったので積極的に使っていこうと思います。
 
 Distroless にはシェルが含まれていないため、アタッチしてデバッグする際はデバッグ用のイメージ `gcr.io/distroless/nodejs:debug` を使いましょう！
+
+今回行った Distroless 以外のベストプラクティスなどは以下の記事が参考になります。
+自分もすべてを対応できているわけではないですが、ちょっとづつ参考にしてイメージを進化させていきたいですね！
+
+https://sysdig.jp/blog/dockerfile-best-practices/
