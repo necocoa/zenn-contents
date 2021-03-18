@@ -21,7 +21,7 @@ COPY --chown=nonroot:nonroot --from=build /app /app
 
 USER nonroot
 EXPOSE 3000
-ENTRYPOINT ["dist/main"]
+CMD ["dist/main"]
 ```
 
 <!-- textlint-disable ja-technical-writing/ja-no-mixed-period -->
@@ -64,7 +64,7 @@ COPY --chown=nonroot:nonroot --from=node_modules /app/node_modules /app/node_mod
 
 USER nonroot
 EXPOSE 3001
-ENTRYPOINT ["dist/main"]
+CMD ["dist/main"]
 
 ```
 
