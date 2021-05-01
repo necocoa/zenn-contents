@@ -49,10 +49,5 @@
       "yarn textlint:fix"
     ],
     "./**/*.{json,yaml,yml}": "yarn format"
-  },
-  "prettier": {
-    "singleQuote": true,
-    "printWidth": 120,
-    "tabWidth": 2
   }
 }
