@@ -5,9 +5,7 @@
 
 ## Node version
 
-Node version: 14.15.4
-
-> 2020/11/15 追記：Node.js v15 で zenn-cli をインストールできない問題が発生しています。原因の調査中ですが、v13 もしくは v14 をご利用ください。
+Node version: 14.16.1
 
 ## Getting start
 
