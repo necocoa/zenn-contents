@@ -1,5 +1,5 @@
 ---
-title: '[初歩]RailsでGraphQL APIをつくるチュートリアル'
+title: 'RailsでGraphQL APIをつくるチュートリアル[graphql-ruby]'
 emoji: '✍️'
 type: 'tech'
 topics: ['graphql', 'rails', 'ruby']
