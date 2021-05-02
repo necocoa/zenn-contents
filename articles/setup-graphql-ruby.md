@@ -28,8 +28,6 @@ $ rails new rails-graphql-api -T --api -d postgresql
 
 ### GraphQL Ruby の導入
 
-https://graphql-ruby.org/getting_started
-
 ```ruby
 # Gemfile
 gem 'graphql'
@@ -158,10 +156,6 @@ API モードだと Sprockets が無効になっているため、有効にし�
 > Note on API Mode
 > If you're using Rails 5 in "API mode", you'll also need to add require "sprockets/railtie" to your application.rb.
 
-参考にした記事
-[https://qiita.com/dkawabata/items/4fd965ee6d7295386a8b](https://qiita.com/dkawabata/items/4fd965ee6d7295386a8b)
-[https://github.com/rmosolgo/graphiql-rails/issues/75](https://github.com/rmosolgo/graphiql-rails/issues/75)
-
 ```diff ruby:config/application.rb
 -  # require "sprockets/railtie"
 +  require "sprockets/railtie"
@@ -202,9 +196,7 @@ http://localhost:3000/graphiql 以下の画面が表示されれば OK です。
 
 ### Model の作成
 
-https://graphql-ruby.org/getting_started.html
-
-Getting Started を参考に Post と Comment のモデルを作成します。
+Post と Comment のモデルを作成します。
 
 ```
 $ bin/rails g model post title:string body:text
@@ -338,9 +330,6 @@ Post と Post に紐づく Comments を取得できました 🎉
 
 `query_type.rb` はどんどん肥大化していくため、件数が増えた場合や複雑な取得方法などで Resolver という形で分離します。
 最初から Resolver を常に使う形でもよいかもしれません。
-
-参考記事
-https://zenn.dev/kei178/articles/2f4ffc6b89618c
 
 resolvers ディレクトリを作成します。
 
@@ -579,3 +568,13 @@ mutation($params: UpdatePostInput!) {
 
 Post の title を変更できました 🎉
 InputObject は共通化したい argment ができたタイミングで作ると良いと思います。
+
+#### 参考にさせてもらった記事
+
+https://graphql-ruby.org/getting_started
+
+https://qiita.com/dkawabata/items/4fd965ee6d7295386a8b
+
+https://github.com/rmosolgo/graphiql-rails/issues/75
+
+https://zenn.dev/kei178/articles/2f4ffc6b89618c
