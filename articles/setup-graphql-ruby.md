@@ -102,6 +102,13 @@ Gem 経由だと Sprockets で IDE が実行されますが、API モードで�
 
 IDE のために Sprockets を有効にするのは微妙な気がするため、自分はアプリをインストールする方法を選びました。
 
+:::message
+
+GraphiQL は Facebook 製ですが、Prisma 製の [GraphQL Playground](https://github.com/graphql/graphql-playground) や Apollo 製の [Apollo Studio](https://www.apollographql.com/docs/studio/) など GraphQL を効率的に開発するツールがどんどん出てきているようです。
+GraphiQL しか使ったことがなかったので、他 IDE も使ってみようと思います。
+
+:::
+
 #### 1. GraphiQL アプリをインストールする
 
 https://github.com/skevy/graphiql-app
