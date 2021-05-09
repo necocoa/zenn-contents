@@ -349,6 +349,7 @@ $ mkdir app/graphql/resolvers
 ```ruby:app/graphql/resolvers/base_resolver.rb
 module Resolvers
   class BaseResolver < GraphQL::Schema::Resolver
+    argument_class Types::BaseArgument
   end
 end
 ```
