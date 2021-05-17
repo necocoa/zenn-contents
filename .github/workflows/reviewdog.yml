@@ -29,7 +29,7 @@ jobs:
             ${{ runner.os }}-
 
       - name: Run textlint
-        uses: tsuyoshicho/action-textlint@v3.0.2
+        uses: tsuyoshicho/action-textlint@v3.1
         with:
           github_token: ${{ secrets.github_token }}
           textlint_flags: "articles/**"
