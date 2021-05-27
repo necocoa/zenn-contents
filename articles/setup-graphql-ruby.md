@@ -28,9 +28,9 @@ $ rails new rails-graphql-api -T --api -d postgresql
 
 ### GraphQL Ruby の導入
 
-```ruby
+```diff ruby:Gemfile.rb
 # Gemfile
-gem 'graphql'
++ gem 'graphql'
 ```
 
 ```
