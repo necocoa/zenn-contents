@@ -18,7 +18,7 @@ graphql-ruby: 1.12.10
 graphql-batch: 0.4.3
 ```
 
-GraphQL をセットアップし Port を取得する API は以前の記事で作成しております。
+GraphQL をゼロからセットアップし Post を取得するまでの実装方法はこちらの記事で説明しています。
 
 https://zenn.dev/necocoa/articles/setup-graphql-ruby
 
@@ -243,7 +243,7 @@ Types::BaseObject の field では同ファイル内にメソッドがあれば�
 
 これで再度実行してみましょう。
 
-```
+```sql
 Started POST "/graphql"
   Post Load (2.0ms)  SELECT "posts".* FROM "posts"
   Comment Load (2.4ms)  SELECT "comments".* FROM "comments" WHERE "comments"."post_id" IN ($1, $2, $3)  [[nil, 1], [nil, 2], [nil, 3]]
@@ -260,7 +260,7 @@ Completed 200 OK
 ```diff ruby:post_type.rb
 module Types
   class PostType < Types::BaseObject
-  # 略
+    # 略
 
 +   def count_comments
 +     object.comments.count
@@ -279,7 +279,7 @@ query {
 }
 ```
 
-```
+```sql
 Started POST "/graphql"
   Post Load (6.5ms)  SELECT "posts".* FROM "posts"
    (2.9ms)  SELECT COUNT(*) FROM "comments" WHERE "comments"."post_id" = $1  [["post_id", 1]]
@@ -289,6 +289,9 @@ Completed 200 OK
 ```
 
 同じく Loader を実装していきます。
+
+CountLoader の実装はこちらを参考にしつつ、AssosiationLoader と同じようなメソッドになるように変更しています。
+https://blog.jamesbrooks.net/graphql-batch-count-loader.html
 
 ```
 $ touch app/graphql/loaders/association_count_loader.rb
@@ -362,10 +365,10 @@ end
 
 ![](https://storage.googleapis.com/zenn-user-upload/4f794d6ed8a57832bab147c2.jpg)
 
-```
+```sql
 Started POST "/graphql"
   Post Load (2.6ms)  SELECT "posts".* FROM "posts"
-   (2.6ms)  SELECT COUNT(*) AS count_all, "comments"."post_id" AS comments_post_id FROM "comments" WHERE "comments"."post_id" IN ($1, $2, $3, $4, $5, $6, $7, $8) GROUP BY "comments"."post_id"  [[nil, 1], [nil, 2], [nil, 3]]
+   (2.6ms)  SELECT COUNT(*) AS count_all, "comments"."post_id" AS comments_post_id FROM "comments" WHERE "comments"."post_id" IN ($1, $2, $3) GROUP BY "comments"."post_id"  [[nil, 1], [nil, 2], [nil, 3]]
 Completed 200 OK
 ```
 
@@ -374,7 +377,7 @@ Completed 200 OK
 ## 参考資料
 
 https://blog.agile.esm.co.jp/entry/2017/06/16/113248
-https://blog.kymmt.com/entry/graphql-batch-examples
-https://blog.jamesbrooks.net/graphql-batch-count-loader.html
 
----
+https://blog.kymmt.com/entry/graphql-batch-examples
+
+https://blog.jamesbrooks.net/graphql-batch-count-loader.html
