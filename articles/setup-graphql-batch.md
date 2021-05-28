@@ -53,12 +53,13 @@ module Types
 +   field :posts, resolver: Resolvers::PostsResolver
   end
 end
-
 ```
 
-### posts resolver を作成する
+### Posts Resolver を作成する
 
 PostsResolver を作成します。
+返り値はわかりやすく Posts 全件にします。
+ページネーションについては今回は触りません。
 
 ```ruby:app/graphql/resolvers/posts_resolver.rb
 module Resolvers
@@ -71,7 +72,6 @@ module Resolvers
     end
   end
 end
-
 ```
 
 ### N+1 の Query を確認する
@@ -81,8 +81,8 @@ posts と has-many の comments を取得してみます。
 ```graphql
 query {
   posts {
+    id
     title
-    body
     comments {
       id
       body
@@ -91,7 +91,7 @@ query {
 }
 ```
 
-![](https://storage.googleapis.com/zenn-user-upload/6xwptfjy1ipgb63vynvnkc8phc57)
+![](https://storage.googleapis.com/zenn-user-upload/149166195490036355e221cf.jpg)
 
 Comment の SQL が N+1 になりました。
 こちらを graphql-batch をつかって解消していきます。
@@ -135,7 +135,6 @@ class RailsGraphqlApiSchema < GraphQL::Schema
 
   # 略
 end
-
 ```
 
 ## Loader を実装
@@ -255,21 +254,32 @@ Completed 200 OK
 
 ## カウンターを実装
 
+続いては投稿に対してのコメント数を取得してみます。
+シンプルに書くとこうですが、N+1 がでます。
+
 ```diff ruby:post_type.rb
 module Types
   class PostType < Types::BaseObject
   # 略
 
-+   def comment_count
++   def count_comments
 +     object.comments.count
 +   end
   end
 end
+```
 
+```graphql
+query {
+  posts {
+    id
+    title
+    countComments
+  }
+}
 ```
 
 ```
-
 Started POST "/graphql"
   Post Load (6.5ms)  SELECT "posts".* FROM "posts"
    (2.9ms)  SELECT COUNT(*) FROM "comments" WHERE "comments"."post_id" = $1  [["post_id", 1]]
@@ -278,39 +288,93 @@ Started POST "/graphql"
 Completed 200 OK
 ```
 
-```diff ruby:post_type.rb
-module Types
-  class PostType < Types::BaseObject
-  # 略
+同じく Loader を実装していきます。
 
-    def comment_count
--     object.comments.count
-+     Loaders::CountLoader.for(Comment, :post_id).load(object.id)
+```
+$ touch app/graphql/loaders/association_count_loader.rb
+```
+
+```ruby:app/graphql/loaders/association_count_loader.rb
+module Loaders
+  class AssociationCountLoader < GraphQL::Batch::Loader
+    def self.validate(model, association_name)
+      new(model, association_name)
+      nil
+    end
+
+    def initialize(model, association_name)
+      super()
+      @model = model
+      @association_name = association_name
+      @reflection = reflect
+    end
+
+    def load(record)
+      raise TypeError, "#{@model} loader can't load association for #{record.class}" unless record.is_a?(@model)
+
+      super
+    end
+
+    def perform(records)
+      counts = preload_counts(records)
+      records.each { |record| fulfill(record, read_count(record, counts) || 0) }
+    end
+
+    private
+
+    def reflect
+      reflection = @model.reflect_on_association(@association_name)
+      return reflection if reflection
+
+      raise ArgumentError, "No association #{@association_name} on #{@model}"
+    end
+
+    def preload_counts(records)
+      klass = @reflection.klass
+      field = @reflection.join_primary_key
+      klass.where(field => records).group(field).count
+    end
+
+    def read_count(record, counts)
+      record_key = record[@reflection.active_record_primary_key]
+      counts[record_key]
     end
   end
 end
-
 ```
 
-```
-Started POST "/graphql" for 127.0.0.1 at 2021-05-27 15:29:27 +0900
-Processing by GraphqlController#execute as HTML
-  Parameters: {"query"=>"query {\n  posts {\n    title\n    body\n    comments {\n      id\n      body\n    }\n    commentCount\n  }\n}", "variables"=>{"id"=>1}, "graphql"=>{"query"=>"query {\n  posts {\n    title\n    body\n    comments {\n      id\n      body\n    }\n    commentCount\n  }\n}", "variables"=>{"id"=>1}}}
-  Post Load (1.9ms)  SELECT "posts".* FROM "posts"
-  ↳ app/controllers/graphql_controller.rb:15:in `execute'
-  Comment Load (3.4ms)  SELECT "comments".* FROM "comments" WHERE "comments"."post_id" IN ($1, $2, $3, $4, $5, $6, $7, $8)  [[nil, 2], [nil, 3], [nil, 4], [nil, 5], [nil, 6], [nil, 7], [nil, 8], [nil, 1]]
-  ↳ app/graphql/loaders/association_loader.rb:39:in `preload_association'
-   (1.9ms)  SELECT COUNT(*) AS count_all, "comments"."post_id" AS comments_post_id FROM "comments" WHERE "comments"."post_id" IN ($1, $2, $3, $4, $5, $6, $7, $8) GROUP BY "comments"."post_id"  [[nil, 2], [nil, 3], [nil, 4], [nil, 5], [nil, 6], [nil, 7], [nil, 8], [nil, 1]]
-  ↳ app/graphql/loaders/count_loader.rb:9:in `perform'
-Completed 200 OK in 17ms (Views: 0.2ms | ActiveRecord: 7.2ms | Allocations: 4039)
+Loader を使って Count を取得するように変更します。
+
+```diff ruby:app/graphql/types/post_type.rb
+module Types
+  class PostType < Types::BaseObject
+    # 略
+
+    def count_comments
+-     object.comments.count
++     Loaders::AssociationCountLoader.for(Post, :comments).load(object)
+    end
+  end
+end
 ```
 
-graphql-batch について。
-https://graphql-ruby.org/dataloader/adopting.html
+それでは実行してみましょう。
+
+![](https://storage.googleapis.com/zenn-user-upload/4f794d6ed8a57832bab147c2.jpg)
+
+```
+Started POST "/graphql"
+  Post Load (2.6ms)  SELECT "posts".* FROM "posts"
+   (2.6ms)  SELECT COUNT(*) AS count_all, "comments"."post_id" AS comments_post_id FROM "comments" WHERE "comments"."post_id" IN ($1, $2, $3, $4, $5, $6, $7, $8) GROUP BY "comments"."post_id"  [[nil, 1], [nil, 2], [nil, 3]]
+Completed 200 OK
+```
+
+これで関連データを SQL の COUNT のような集計関数をつかって実装する方法ができました。
+
+## 参考資料
+
 https://blog.agile.esm.co.jp/entry/2017/06/16/113248
 https://blog.kymmt.com/entry/graphql-batch-examples
-
-graphql-batch で counter を実装する。
 https://blog.jamesbrooks.net/graphql-batch-count-loader.html
 
 ---
