@@ -1,9 +1,9 @@
 ---
 title: '[N+1解消]RailsのGraphQLにgraphql-batchを導入する[graphql-ruby]'
-emoji: '💬'
-type: 'tech' # tech: 技術記事 / idea: アイデア
+emoji: '🥳'
+type: 'tech'
 topics: ['graphql', 'rails', 'ruby']
-published: false
+published: true
 ---
 
 この記事では GraphQL 自体の説明や GraphQL 特有の用語の説明などは行いません。
