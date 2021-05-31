@@ -262,7 +262,7 @@ module Types
   class PostType < Types::BaseObject
     # 略
 
-+   def count_comments
++   def total_comments
 +     object.comments.count
 +   end
   end
@@ -274,7 +274,7 @@ query {
   posts {
     id
     title
-    countComments
+    totalComments
   }
 }
 ```
@@ -357,7 +357,7 @@ module Types
   class PostType < Types::BaseObject
     # 略
 
-    def count_comments
+    def total_comments
 -     object.comments.count
 +     Loaders::AssociationCountLoader.for(Post, :comments).load(object)
     end
