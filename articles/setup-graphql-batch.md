@@ -305,11 +305,12 @@ module Loaders
       nil
     end
 
-    def initialize(model, association_name)
+    def initialize(model, association_name, where: nil)
       super()
       @model = model
       @association_name = association_name
-      @reflection = reflect
+      @reflection = reflection
+      @where = where
     end
 
     def load(record)
@@ -319,28 +320,31 @@ module Loaders
     end
 
     def perform(records)
-      counts = preload_counts(records)
-      records.each { |record| fulfill(record, read_count(record, counts) || 0) }
+      counts = query(records)
+      records.each do |record|
+        key = record_key(record)
+        fulfill(record, counts[key] || 0)
+      end
     end
 
     private
 
-    def reflect
+    def reflection
       reflection = @model.reflect_on_association(@association_name)
       return reflection if reflection
 
       raise ArgumentError, "No association #{@association_name} on #{@model}"
     end
 
-    def preload_counts(records)
-      klass = @reflection.klass
-      field = @reflection.join_primary_key
-      klass.where(field => records).group(field).count
+    def query(records)
+      column = @reflection.join_primary_key
+      scope = @reflection.klass
+      scope = scope.where(@where) if @where
+      scope.where(column => records).group(column).count
     end
 
-    def read_count(record, counts)
-      record_key = record[@reflection.active_record_primary_key]
-      counts[record_key]
+    def record_key(record)
+      record[@reflection.active_record_primary_key]
     end
   end
 end
