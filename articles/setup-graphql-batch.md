@@ -68,9 +68,17 @@ module Resolvers
     type [Types::PostType], null: false
 
     def resolve
-      Post.all
+      Post.all.recent
     end
   end
+end
+```
+
+```diff ruby:app/models/post.rb
+class PostReview < ApplicationRecord
+  belongs_to :post
+
++ scope :recent, -> { order(created_at: :desc) }
 end
 ```
 
@@ -98,10 +106,10 @@ Comment の SQL が N+1 になりました。
 
 ```
 Started POST "/graphql"
-  Post Load (1.8ms)  SELECT "posts".* FROM "posts"1
-  Comment Load (3.1ms)  SELECT "comments".* FROM "comments" WHERE "comments"."post_id" = $1  [["post_id", 1]]1
-  Comment Load (4.9ms)  SELECT "comments".* FROM "comments" WHERE "comments"."post_id" = $1  [["post_id", 2]]1
-  Comment Load (3.1ms)  SELECT "comments".* FROM "comments" WHERE "comments"."post_id" = $1  [["post_id", 3]]1
+  Post Load (1.8ms)  SELECT "posts".* FROM "posts" ORDER BY "posts"."created_at" DESC
+  Comment Load (3.1ms)  SELECT "comments".* FROM "comments" WHERE "comments"."post_id" = $1  [["post_id", 1]]
+  Comment Load (4.9ms)  SELECT "comments".* FROM "comments" WHERE "comments"."post_id" = $1  [["post_id", 2]]
+  Comment Load (3.1ms)  SELECT "comments".* FROM "comments" WHERE "comments"."post_id" = $1  [["post_id", 3]]
 ```
 
 ## GraphQL Batch を導入
@@ -245,7 +253,7 @@ Types::BaseObject の field では同ファイル内にメソッドがあれば�
 
 ```sql
 Started POST "/graphql"
-  Post Load (2.0ms)  SELECT "posts".* FROM "posts"
+  Post Load (2.0ms)  SELECT "posts".* FROM "posts" ORDER BY "posts"."created_at" DESC
   Comment Load (2.4ms)  SELECT "comments".* FROM "comments" WHERE "comments"."post_id" IN ($1, $2, $3)  [[nil, 1], [nil, 2], [nil, 3]]
 Completed 200 OK
 ```
@@ -281,7 +289,7 @@ query {
 
 ```sql
 Started POST "/graphql"
-  Post Load (6.5ms)  SELECT "posts".* FROM "posts"
+  Post Load (6.5ms)  SELECT "posts".* FROM "posts" ORDER BY "posts"."created_at" DESC
    (2.9ms)  SELECT COUNT(*) FROM "comments" WHERE "comments"."post_id" = $1  [["post_id", 1]]
    (4.9ms)  SELECT COUNT(*) FROM "comments" WHERE "comments"."post_id" = $1  [["post_id", 2]]
    (1.9ms)  SELECT COUNT(*) FROM "comments" WHERE "comments"."post_id" = $1  [["post_id", 3]]
@@ -371,7 +379,7 @@ end
 
 ```sql
 Started POST "/graphql"
-  Post Load (2.6ms)  SELECT "posts".* FROM "posts"
+  Post Load (2.6ms)  SELECT "posts".* FROM "posts" ORDER BY "posts"."created_at" DESC
    (2.6ms)  SELECT COUNT(*) AS count_all, "comments"."post_id" AS comments_post_id FROM "comments" WHERE "comments"."post_id" IN ($1, $2, $3) GROUP BY "comments"."post_id"  [[nil, 1], [nil, 2], [nil, 3]]
 Completed 200 OK
 ```
