@@ -213,6 +213,7 @@ $ bin/rails g model comment post:references body:text
 各カラムに `null: false` を追加します。
 
 ```ruby
+# xxxx_create_posts.rb
 class CreatePosts < ActiveRecord::Migration[6.1]
   def change
     create_table :posts do |t|
@@ -221,9 +222,11 @@ class CreatePosts < ActiveRecord::Migration[6.1]
 
       t.timestamps
     end
+    add_index :posts, :created_at
   end
 end
 
+# xxxx_create_comments.rb
 class CreateComments < ActiveRecord::Migration[6.1]
   def change
     create_table :comments do |t|
@@ -460,7 +463,7 @@ end
 GraphiQL で試してみましょう。
 
 ```graphql
-mutation($input: CreatePostInput!) {
+mutation ($input: CreatePostInput!) {
   createPost(input: $input) {
     post {
       title
@@ -550,7 +553,7 @@ end
 GraphiQL で実行してみましょう。
 
 ```graphql
-mutation($params: UpdatePostInput!) {
+mutation ($params: UpdatePostInput!) {
   updatePost(input: $params) {
     post {
       id
