@@ -32,5 +32,5 @@ jobs:
         uses: tsuyoshicho/action-textlint@v3.1
         with:
           github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
+          fail_on_error: true
           textlint_flags: "articles/**"
