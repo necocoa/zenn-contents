@@ -28,9 +28,12 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
+      - name: Run format check
+        run: yarn format:check
+
       - name: Run textlint
+        if: always()
         uses: tsuyoshicho/action-textlint@v3.1
         with:
           github_token: ${{ secrets.github_token }}
           fail_on_error: true
-          textlint_flags: "articles/**"

@@ -8,6 +8,7 @@
     "article": "npx zenn new:article",
     "article:slug": "npx zenn new:article --slug",
     "format": "prettier --write",
+    "format:check": "prettier --check .",
     "format:all": "prettier --write .",
     "textlint": "textlint",
     "textlint:fix": "textlint --fix",
