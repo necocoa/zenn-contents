@@ -1,0 +1,36 @@
+name: lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2.1.5
+        with:
+          node-version: "14"
+
+      - name: Restore cache node modules
+        uses: actions/cache@v2.1.4
+        with:
+          path: "**/node_modules"
+          key: node-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Run package install
+        run: npm ci
+
+      - name: Run format check
+        run: npm run format:check
+
+      - name: Run textlint
+        if: always()
+        uses: tsuyoshicho/action-textlint@v3.1
+        with:
+          github_token: ${{ secrets.github_token }}
+          fail_on_error: true
