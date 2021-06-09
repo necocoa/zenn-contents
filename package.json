@@ -11,7 +11,7 @@
     "format:all": "prettier --write .",
     "textlint": "textlint",
     "textlint:fix": "textlint --fix",
-    "textlint:all": "textlint ./articles ./books"
+    "textlint:all": "textlint --fix ./articles ./books"
   },
   "repository": {
     "type": "git",
