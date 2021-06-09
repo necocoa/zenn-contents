@@ -5,7 +5,7 @@
 
 ## Node version
 
-Node version: 14.16.1
+Node version: 14.17.0
 
 ## Getting start
 
