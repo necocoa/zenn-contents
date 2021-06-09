@@ -14,19 +14,19 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2.1.5
         with:
-          node-version: "14"
+          node-version: 14
 
       - name: Restore cache node modules
         uses: actions/cache@v2.1.4
         with:
           path: "**/node_modules"
-          key: node-modules-${{ hashFiles('**/package-lock.json') }}
+          key: node-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Run package install
-        run: npm ci
+        run: yarn install --non-interactive --frozen-lockfile
 
       - name: Run format check
-        run: npm run format:check
+        run: yarn format:check
 
       - name: Run textlint
         if: always()
