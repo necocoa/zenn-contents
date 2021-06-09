@@ -104,7 +104,7 @@ query {
 Comment の SQL が N+1 になりました。
 こちらを graphql-batch をつかって解消していきます。
 
-```
+```sql
 Started POST "/graphql"
   Post Load (1.8ms)  SELECT "posts".* FROM "posts" ORDER BY "posts"."created_at" DESC
   Comment Load (3.1ms)  SELECT "comments".* FROM "comments" WHERE "comments"."post_id" = $1  [["post_id", 1]]

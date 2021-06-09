@@ -103,7 +103,7 @@ Stimulus を使う時は HTML 要素に `data-controller` と `data-action` を�
 
 #### コントローラーファイル作成
 
-`<tr>`要素をクリックした際に、指定パスに遷移する実装をします。
+`<tr>` 要素をクリックした際に、指定パスに遷移する実装をします。
 
 Stimulus で使う JavaScript のファイルは `app/javascript/controllers` 配下に置きます。命名規則は `xxx_controller.js` です。
 
@@ -144,7 +144,7 @@ export default class extends Controller {
 
 最終的に出来上がったコードを上げておきます。以下の機能も追加しています。
 
-1. `<tr>`要素をリンクタグと同じ挙動にした
+1. `<tr>` 要素をリンクタグと同じ挙動にした
    1. フォーカス対象にする
    2. ホバーした時ポインターにする
    3. フォーカス時に Enter を押すと遷移する
@@ -216,6 +216,6 @@ export default class extends Controller {
 
 ## まとめ
 
-Stimulus は副作用が少なくすぐに導入できると思います。既存の jQuery を置き換えたり、処理の共通化などとても便利そうです。`partial collection`のときに起きがちな id をユニークにする処理なども一切不要になるのがとても嬉しいですね。
+Stimulus は副作用が少なくすぐに導入できると思います。既存の jQuery を置き換えたり、処理の共通化などとても便利そうです。`partial collection` のときに起きがちな id をユニークにする処理なども一切不要になるのがとても嬉しいですね。
 
 React/Vue.js を使うまでもない JavaScript を書く時に積極的に使っていこうと思います。
