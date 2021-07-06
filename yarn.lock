@@ -266,14 +266,14 @@
   resolved "https://registry.yarnpkg.com/@steelydylan/prism-diff-highlight/-/prism-diff-highlight-1.0.4.tgz#aa9328c472af3e7c63e1830ba9375b128e5f9f58"
   integrity sha512-1M16pY3PvWVScLrYj9nENZm1yQ+V/w2YoB6NMZkv+/O/nAHoRg6qS1BX8FNnCKSbIk52QIwj+NUi/sUK2EMuew==
 
-"@textlint-rule/textlint-rule-no-invalid-control-character@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@textlint-rule/textlint-rule-no-invalid-control-character/-/textlint-rule-no-invalid-control-character-1.2.0.tgz#3e8f03258d06b7deb2592bdb13626659c46abbf5"
-  integrity sha512-FgkOQr14H8D/LQVAEOR2cGWhzItb9MXCAvaBwKkysIfP9Ngwam+8NRmbphQ/GrAm3PXV63QmK1xwAKM1DntwmQ==
+"@textlint-rule/textlint-rule-no-invalid-control-character@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@textlint-rule/textlint-rule-no-invalid-control-character/-/textlint-rule-no-invalid-control-character-2.0.0.tgz#1d058af373bc34256097941429d0c04e5eca519a"
+  integrity sha512-EmTC9mrmI5tm9AS+/jv46CzQVycdPjAvH5sk0DjjYCXYNv2oTWk+7naAyKJ3kKQlLzG4KHmX/JDHerVF2T6S2Q==
   dependencies:
     execall "^1.0.0"
 
-"@textlint-rule/textlint-rule-no-unmatched-pair@^1.0.7":
+"@textlint-rule/textlint-rule-no-unmatched-pair@^1.0.8":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@textlint-rule/textlint-rule-no-unmatched-pair/-/textlint-rule-no-unmatched-pair-1.0.8.tgz#28538c422c35899fbe331c1652976eb8e50a1477"
   integrity sha512-C+ejNcHFKWGQ9aoMnk7jL815iUXg4soIdK/gpN2wJWiwbtThw6mglIhvI+5qkFoUNCYjmWZbN0I3F4YUgoAHaw==
@@ -381,11 +381,6 @@
     remark-parse "^9.0.0"
     traverse "^0.6.6"
     unified "^9.2.1"
-
-"@textlint/module-interop@^1.2.4":
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/@textlint/module-interop/-/module-interop-1.2.5.tgz#f10582e66e0633ac1aea228f30c5b3f5d8463f45"
-  integrity sha512-+yEluCSbj6oxk9ENFojVcSxURvXOg7AU3vBiVHPjPEShaqbzZZ6tcut6gbDcIYhEDUkegZGmGwyfOe+wNABhKw==
 
 "@textlint/module-interop@^12.0.0":
   version "12.0.0"
@@ -3801,6 +3796,11 @@ textlint-rule-no-nfd@^1.0.2:
     textlint-rule-helper "^2.1.1"
     unorm "^1.4.1"
 
+textlint-rule-no-zero-width-spaces@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/textlint-rule-no-zero-width-spaces/-/textlint-rule-no-zero-width-spaces-1.0.1.tgz#15a6abda05f08e483d5bb33a7034d904259d77a3"
+  integrity sha512-AkxpzBILGB4YsXddzHx2xqpXmqMv5Yd+PQm4anUV+ADSJuwLP1Jd6yHf/LOtu9j3ps8K3XM9vQrXRK73z0bU3A==
+
 textlint-rule-preset-ja-spacing@^2.1.3:
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/textlint-rule-preset-ja-spacing/-/textlint-rule-preset-ja-spacing-2.1.3.tgz#773be672f9abab3aa44b9ebcd5dc3c886e26ff27"
@@ -3814,14 +3814,14 @@ textlint-rule-preset-ja-spacing@^2.1.3:
     textlint-rule-ja-space-around-code "^2.1.3"
     textlint-rule-ja-space-between-half-and-full-width "^2.1.3"
 
-textlint-rule-preset-ja-technical-writing@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/textlint-rule-preset-ja-technical-writing/-/textlint-rule-preset-ja-technical-writing-6.0.0.tgz#faa78ce1f5980f061b9d4ad2a090ce3d9546f403"
-  integrity sha512-hm2gioF5fbkYAkmOsUTX/K18n9Pq2HJZZHvWlYyzyKhJd2ZGSbMBljGIy2/7w07b4urRXTUCaJQQ6YZcFQqGPA==
+textlint-rule-preset-ja-technical-writing@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/textlint-rule-preset-ja-technical-writing/-/textlint-rule-preset-ja-technical-writing-7.0.0.tgz#40741e571f0af8ddd5edfc7fcf6faf67cb9402e5"
+  integrity sha512-zzpMctCALdCOOfz/Gci0dgsb4Vi6sjAkxzNoruMEqMRjZyzp6CdRCi1ofe/ZusTzU5aGw452xCAg0VAD7tZeHA==
   dependencies:
-    "@textlint-rule/textlint-rule-no-invalid-control-character" "^1.2.0"
-    "@textlint-rule/textlint-rule-no-unmatched-pair" "^1.0.7"
-    "@textlint/module-interop" "^1.2.4"
+    "@textlint-rule/textlint-rule-no-invalid-control-character" "^2.0.0"
+    "@textlint-rule/textlint-rule-no-unmatched-pair" "^1.0.8"
+    "@textlint/module-interop" "^12.0.0"
     textlint-rule-ja-no-abusage "^3.0.0"
     textlint-rule-ja-no-mixed-period "^2.1.1"
     textlint-rule-ja-no-redundant-expression "^4.0.0"
@@ -3840,10 +3840,11 @@ textlint-rule-preset-ja-technical-writing@^6.0.0:
     textlint-rule-no-hankaku-kana "^1.0.2"
     textlint-rule-no-mix-dearu-desumasu "^5.0.0"
     textlint-rule-no-nfd "^1.0.2"
-    textlint-rule-preset-jtf-style "^2.3.8"
-    textlint-rule-sentence-length "^2.2.0"
+    textlint-rule-no-zero-width-spaces "^1.0.1"
+    textlint-rule-preset-jtf-style "^2.3.12"
+    textlint-rule-sentence-length "^3.0.0"
 
-textlint-rule-preset-jtf-style@^2.3.8:
+textlint-rule-preset-jtf-style@^2.3.12:
   version "2.3.12"
   resolved "https://registry.yarnpkg.com/textlint-rule-preset-jtf-style/-/textlint-rule-preset-jtf-style-2.3.12.tgz#17a114c24eb83c093ecb7c352eb4447441581e40"
   integrity sha512-Te2pQWku6hpLknWh8rpFjAiOZpSZa3yMaBEbmdstFf8C9ejX6+LXI0gn7vlb7nBbDWnLV+pgVoYXWtqk2W5Jig==
@@ -3868,15 +3869,15 @@ textlint-rule-prh@^5.2.1, textlint-rule-prh@^5.3.0:
     textlint-rule-helper "^2.1.1"
     untildify "^3.0.3"
 
-textlint-rule-sentence-length@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/textlint-rule-sentence-length/-/textlint-rule-sentence-length-2.2.0.tgz#5554dab081153af889a967b8670fbb3e6bb4f109"
-  integrity sha512-0C7XZvqcdDwBQC1Sfyr47uDAChH0dO3O4gjxG4C/cwRFK8cyjIic8h7g+xaN7c9x+4OoMz+89SksuaHLo5UvqQ==
+textlint-rule-sentence-length@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/textlint-rule-sentence-length/-/textlint-rule-sentence-length-3.0.0.tgz#72587bc05a1e02f9d0f0099c01fc36aa8740556e"
+  integrity sha512-H2mktN9Y29Hooljiot9yowsMpt4FSiTQt+EtiDRHPDDdXMX8eNG0The5Z7rfR94G5B1N6x3ZssZAcST9EKVjMQ==
   dependencies:
     "@textlint/regexp-string-matcher" "^1.1.0"
-    sentence-splitter "^3.0.11"
+    sentence-splitter "^3.2.1"
     textlint-rule-helper "^2.1.1"
-    textlint-util-to-string "^3.0.0"
+    textlint-util-to-string "^3.1.1"
 
 textlint-rule-spellcheck-tech-word@^5.0.0:
   version "5.0.0"
