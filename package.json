@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/necocoa/zenn-contents#readme",
   "dependencies": {
-    "zenn-cli": "^0.1.89"
+    "zenn-cli": "^0.1.91"
   },
   "devDependencies": {
     "husky": "^6.0.0",
