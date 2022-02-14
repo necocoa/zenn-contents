@@ -31,7 +31,7 @@ jobs:
 
       - name: Run textlint
         if: always()
-        uses: tsuyoshicho/action-textlint@v3.3
+        uses: tsuyoshicho/action-textlint@v3.6
         with:
           github_token: ${{ secrets.github_token }}
           fail_on_error: true
