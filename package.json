@@ -29,7 +29,7 @@
     "zenn-cli": "^0.1.131"
   },
   "devDependencies": {
-    "husky": "^6.0.0",
+    "husky": "^8.0.1",
     "lint-staged": "^11.1.2",
     "prettier": "^2.7.1",
     "textlint": "^12.2.2",
