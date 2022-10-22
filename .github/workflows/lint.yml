@@ -16,15 +16,9 @@ jobs:
       - uses: actions/setup-node@v3.5.1
         with:
           node-version: 16
-
-      - name: Restore cache node modules
-        uses: actions/cache@v3.0.11
-        with:
-          path: "**/node_modules"
-          key: node-modules-${{ hashFiles('**/yarn.lock') }}
-
+          cache: "yarn"
       - name: Run package install
-        run: yarn install --non-interactive --frozen-lockfile
+        run: yarn install --frozen-lockfile
 
       - name: Run format check
         run: yarn format:check
