@@ -10,7 +10,7 @@ published: true
 Rails をつかって GraphQL の API をサクっと作ってみるという趣旨で作成しています。
 
 ```
-ruby: 3.0.1
+ruby: 3.1.3
 rails: 6.1.7
 graphql-ruby: 2.0.15
 graphql-batch: 0.5.1
