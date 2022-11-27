@@ -9,12 +9,10 @@ published: true
 この記事では GraphQL 自体の説明や GraphQL 特有の用語の説明などは行いません。
 Rails をつかって GraphQL の API をサクっと作ってみるという趣旨で作成しています。
 
-2021 年 5 月 27 日時点での最新 Version です。
-
 ```
 ruby: 3.0.1
 rails: 6.1.7
-graphql-ruby: 1.13.17
+graphql-ruby: 2.0.15
 graphql-batch: 0.5.1
 ```
 
