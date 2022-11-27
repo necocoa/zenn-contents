@@ -13,8 +13,8 @@ Rails をつかって GraphQL の API をサクっと作ってみるという趣
 
 ```
 ruby: 3.0.1
-rails: 6.1.3.1
-graphql-ruby: 1.12.8
+rails: 6.1.7
+graphql-ruby: 1.13.17
 ```
 
 ## GraphQL のセットアップ

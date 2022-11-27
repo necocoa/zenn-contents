@@ -13,9 +13,9 @@ Rails をつかって GraphQL の API をサクっと作ってみるという趣
 
 ```
 ruby: 3.0.1
-rails: 6.1.3.2
-graphql-ruby: 1.12.10
-graphql-batch: 0.4.3
+rails: 6.1.7
+graphql-ruby: 1.13.17
+graphql-batch: 0.5.1
 ```
 
 GraphQL をゼロからセットアップし Post を取得するまでの実装方法はこちらの記事で説明しています。
@@ -160,7 +160,13 @@ $ mkdir app/graphql/loaders
 ```
 
 example の association_loader を実装します。
-https://github.com/Shopify/graphql-batch/blob/master/examples/association_loader.rb
+https://github.com/Shopify/graphql-batch/blob/62a9a89386b119f726cda8d51d2c589e6492680a/examples/association_loader.rb
+
+::: message
+Rails 7 から `ActiveRecord::Associations::Preloader` が変更されているので、Rails 7 以上を使う場合は以下の commit を参照してください。
+
+https://github.com/Shopify/graphql-batch/commit/726bcb6b25daa20cdc0536c132d4b8f83377ab4b
+:::
 
 Loader 内でなにをやっているのか知りたい方はこちらの記事が参考になりましたので、参照ください。
 https://blog.kymmt.com/entry/graphql-batch-examples
