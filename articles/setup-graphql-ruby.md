@@ -578,6 +578,12 @@ mutation ($params: UpdatePostInput!) {
 Post の title を変更できました 🎉
 InputObject は共通化したい argment ができたタイミングで作ると良いと思います。
 
+## N+1 問題の解消
+
+こちらの記事にて graphql-batch を用いた N+1 問題の解消方法を解説しています。
+
+https://zenn.dev/necocoa/articles/setup-graphql-batch
+
 #### 参考にさせてもらった記事
 
 https://graphql-ruby.org/getting_started
