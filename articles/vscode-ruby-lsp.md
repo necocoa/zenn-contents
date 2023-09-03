@@ -1,19 +1,19 @@
 ---
-title: 'Shopify製Ruby LSPを導入し開発環境を改善する[VSCode]'
+title: 'Shopify製Ruby LSPを導入し開発環境を改善する[VS Code]'
 emoji: '💎'
 type: 'tech' # tech: 技術記事 / idea: アイデア
 topics: ['rails', 'ruby', 'vscode']
 published: true
 ---
 
-みなさんは VSCode・Ruby で開発するとき、Extention は何を入れていますか？
+みなさんは VS Code・Ruby で開発するとき、Extention は何を入れていますか？
 LSP である rebornix.Ruby を入れている方は多いかと思います。
 
 ですが rebornix.Ruby は Deprecated になっており Shopify の ruby-lsp を使うように公式から勧められています。
 
 > （DeelL訳）Shopifyのruby-lspと関連するvscode-ruby-lspは、このエクステンションに代わるものとして推奨される。TypeScriptのような他の言語に依存するよりも、Rubyそのものを使ったほうが、高品質のLSP実装を作るのはかなり簡単だ。
 
-今回はその VSCode Extention である vscode-ruby-lsp へ切り替える方法を解説します。
+今回はその VS Code Extention である vscode-ruby-lsp へ切り替える方法を解説します。
 
 ちなみにこちらの記事を見て、早くなるなら入れてみようと思ったのが最初の動機で、rebornix.Ruby が Deprecated だとは記事を書くタイミングで知りました。
 
@@ -45,7 +45,7 @@ https://marketplace.visualstudio.com/items?itemName=misogi.ruby-rubocop
 - セマンティックハイライトのサポート
 - 基本的なインテリセンスのサポート
 
-### VSCode settings
+### VS Code settings
 
 ```json
 {
@@ -89,13 +89,13 @@ Extentions pack もあり、こちらでも問題ありません。
 - タイプ時の書式
 - パスの補完
 - デバッグサポート
-- VSCode の UI によるテストの実行とデバッグ
+- VS Code の UI によるテストの実行とデバッグ
 
 細かい機能郡はこちらに書いてあります。
 
 https://shopify.github.io/ruby-lsp/RubyLsp/Requests.html
 
-### VSCode settings
+### VS Code settings
 
 settings に設定します。細かい設定は Documents を読んでいてだければと思います。
 
