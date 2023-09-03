@@ -4,9 +4,9 @@
   "description": "Zennのコンテンツを管理",
   "main": "index.js",
   "scripts": {
-    "preview": "npx zenn preview",
-    "article": "npx zenn new:article",
-    "article:slug": "npx zenn new:article --slug",
+    "preview": "zenn preview",
+    "article": "zenn new:article",
+    "article:slug": "zenn new:article --slug",
     "format": "prettier --write",
     "format:check": "prettier --check .",
     "format:all": "prettier --write .",
