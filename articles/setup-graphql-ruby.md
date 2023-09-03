@@ -90,7 +90,7 @@ Skipped graphiql, as this rails project is API only
 ### GraphiQL IDE の導入
 
 GraphQL API の動作確認のため GraphiQL を入れます。
-入れる方法はアプリか Gem の二通りがあります。
+入れる方法はアプリケーションか Gem の二通りがあります。
 
 1. GraphiQL.app
 2. gem graphiql-rails
@@ -98,16 +98,16 @@ GraphQL API の動作確認のため GraphiQL を入れます。
 Gem 経由だと Sprockets で IDE が実行されますが、API モードですと Sprockets が有効になっていないため有効にする必要があります。
 ※API モードではない場合 graphiql-rails を入れた状態で `bin/rails g graphql:install` を実行すると勝手にセットアップしてくれます。
 
-IDE のために Sprockets を有効にするのは微妙な気がするため、自分はアプリをインストールする方法を選びました。
+IDE のために Sprockets を有効にするのは微妙な気がするため、自分はアプリケーションをインストールする方法を選びました。
 
 :::message
 
 GraphiQL は Facebook 製ですが、Prisma 製の [GraphQL Playground](https://github.com/graphql/graphql-playground) や Apollo 製の [Apollo Studio](https://www.apollographql.com/docs/studio/) など GraphQL を効率的に開発するツールがどんどん出てきているようです。
-GraphiQL しか使ったことがなかったので、他 IDE も使ってみようと思います。
+GraphiQL しか使ったことがなかったので、ほか IDE も使ってみようと思います。
 
 :::
 
-#### 1. GraphiQL アプリをインストールする
+#### 1. GraphiQL をインストールする
 
 https://github.com/skevy/graphiql-app
 
@@ -239,7 +239,7 @@ end
 
 ### Object Type の作成
 
-つづいて Post と Comment の型を作成していきます。
+続いて Post と Comment の型を作成していきます。
 モデルと同じ名前で作成すると勝手に各カラムと型を付けてくれます。
 has-many 等は読み込んでくれないようなので自分で設定します。
 
@@ -399,11 +399,11 @@ end
 これで Resolver での取得に変更できました。
 GraphiQL で同様の Query を使って取得できるか確認してみてください。
 
-## Mutation をつくってみる
+## Mutation を作ってみる
 
 ### Create Post Mutation
 
-つづいては Post を作成する Mutation をつくります。
+続いては Post を作成する Mutation を作ります。
 `g graphql:mutation` を使って作成すると `mutation_type.rb` への追加と `create_post.rb` の作成が行われます。
 
 ```
@@ -439,8 +439,8 @@ end
 ```
 
 `create_post.rb` を編集していきます。
-field は返り値の指定となります。
-resolve の返り値は field の返り値に合わせてハッシュで返します。
+field は戻り値の指定となります。
+resolve の戻り値は field の戻り値に合わせてハッシュで返します。
 
 ```diff ruby:app/graphql/mutations/create_post.rb
 module Mutations
@@ -471,7 +471,7 @@ mutation ($input: CreatePostInput!) {
 }
 ```
 
-左下の QUERY VARIABLES をクリックすると入力できるようになります。
+左下の QUERY VARIABLES をクリックすると入力できます。
 
 ```json:variables
 {
@@ -516,7 +516,7 @@ module Types
 end
 ```
 
-つづいて、`update_post.rb` を作成します。
+続いて `update_post.rb` を作成します。
 
 ```
 $ bin/rails g graphql:mutation update_post
@@ -531,7 +531,7 @@ module Types
 end
 ```
 
-argument に Types::Inputs::PostInputType を渡すことで params は PostInputType の型を持つことができます。
+argument に Types::Inputs::PostInputType を渡すことで params は PostInputType の型をもつことができます。
 
 ```diff ruby:app/graphql/mutations/update_post.rb
 module Mutations

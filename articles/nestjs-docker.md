@@ -6,7 +6,7 @@ topics: ['docker', 'nodejs', 'nestjs']
 published: true
 ---
 
-今回は NestJS を使っていますが、ビルド後のファイルと node_modules を使っているだけなので、express や他の FW でも同様にできると思います。
+今回は NestJS を使っていますが、ビルド後のファイルと node_modules を使っているだけですので、Express やほかの FW でも同様にできると思います。
 
 ## Distroless とは？
 
@@ -24,7 +24,7 @@ https://blog.inductor.me/entry/alpine-not-recommended
 
 ## 結果
 
-| 削減対策無し slim | マルチビルド slim | マルチビルド distroless |
+| 削減対策なし slim | マルチビルド slim | マルチビルド distroless |
 | :---------------: | :---------------: | :---------------------: |
 |     667.66 MB     |     177.56 MB     |        129.1 MB         |
 
@@ -337,11 +337,11 @@ CMD ["node", "dist/main"]
 
 ## まとめ
 
-| 削減対策無し slim | マルチビルド slim | マルチビルド distroless |
+| 削減対策なし slim | マルチビルド slim | マルチビルド distroless |
 | :---------------: | :---------------: | :---------------------: |
 |     667.66 MB     |     177.56 MB     |        129.1 MB         |
 
-- 減対策無し slim と比較し `538.56 MB` のイメージサイズ削減
+- 減対策なし slim と比較し `538.56 MB` のイメージサイズ削減
 - マルチビルド slim と比較し `48.46 MB` のイメージサイズ削減
 
 イメージサイズが小さくなるのはとても楽しいですね！
@@ -350,6 +350,6 @@ CMD ["node", "dist/main"]
 Distroless にはシェルが含まれていないため、アタッチしてデバッグする際はデバッグ用のイメージ `gcr.io/distroless/nodejs:debug` を使いましょう！
 
 今回行った Distroless 以外のベストプラクティスなどは以下の記事が参考になります。
-自分もすべてを対応できているわけではないですが、ちょっとづつ参考にしてイメージを進化させていきたいですね！
+自分もすべてを対応できているわけではないですが、ちょっとずつ参考にしてイメージを進化させていきたいですね！
 
 https://sysdig.jp/blog/dockerfile-best-practices/

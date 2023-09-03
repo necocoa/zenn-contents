@@ -75,7 +75,7 @@ CMD ["dist/main"]
 ## Distroless で root 以外のユーザーを扱う
 
 通常の Docker イメージだとシェルが入っているため `adduser` などでユーザーを作ります。
-Distroless で同様に行おうとしたら実行するシェルが無いとエラーが発生します。
+Distroless で同様に行おうとしたら実行するシェルがないとエラーが発生します。
 
 ```
  > [stage-2 2/6] RUN groupadd -r app && useradd -r -g app -G app:
