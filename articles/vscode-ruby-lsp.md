@@ -36,7 +36,7 @@ https://shopify.engineering/improving-the-developer-experience-with-ruby-lsp
 https://marketplace.visualstudio.com/items?itemName=rebornix.Ruby
 https://marketplace.visualstudio.com/items?itemName=misogi.ruby-rubocop
 
-#### rebornix.Ruby の主な機能
+### rebornix.Ruby の主な機能
 
 - rvm、rbenv、chruby、asdf をサポートした Ruby 環境の自動検出
 - RuboCop、Standard、Reek による Lint サポート
@@ -80,7 +80,7 @@ Extentions pack もあり、こちらでも問題ありません。
 - Ruby Sorbet
 - VSCode rdbg Ruby Debugger
 
-#### Shopify.ruby-lsp の主な機能
+### Shopify.ruby-lsp の主な機能
 
 - セマンティックハイライト
 - シンボル検索とコードアウトライン
@@ -95,7 +95,7 @@ Extentions pack もあり、こちらでも問題ありません。
 
 https://shopify.github.io/ruby-lsp/RubyLsp/Requests.html
 
-#### VS Code settings
+### VS Code settings
 
 settings に設定します。細かい設定は Documents を読んでいてだければと思います。
 
@@ -118,7 +118,7 @@ https://shopify.github.io/ruby-lsp/RubyLsp/Requests/WorkspaceSymbol.html
 
 ワークスペース内のシンボルを検索できる機能は便利そうで使ってみようと思いました。
 
-## 置き換えられた Extention
+### 置き換えられた Extention
 
 https://marketplace.visualstudio.com/items?itemName=rebornix.Ruby
 https://marketplace.visualstudio.com/items?itemName=misogi.ruby-rubocop
