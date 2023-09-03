@@ -45,7 +45,7 @@ https://marketplace.visualstudio.com/items?itemName=misogi.ruby-rubocop
 - セマンティックハイライトのサポート
 - 基本的なインテリセンスのサポート
 
-### VS Code settings
+### VSCode settings
 
 ```json
 {
@@ -89,13 +89,13 @@ Extentions pack もあり、こちらでも問題ありません。
 - タイプ時の書式
 - パスの補完
 - デバッグサポート
-- VS Code の UI によるテストの実行とデバッグ
+- VSCode の UI によるテストの実行とデバッグ
 
 細かい機能郡はこちらに書いてあります。
 
 https://shopify.github.io/ruby-lsp/RubyLsp/Requests.html
 
-### VS Code settings
+### VSCode settings
 
 settings に設定します。細かい設定は Documents を読んでいてだければと思います。
 
