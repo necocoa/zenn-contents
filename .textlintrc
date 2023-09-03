@@ -39,8 +39,7 @@
       "rulePaths": [
         "prh.yml"
       ]
-    },
-    "spellcheck-tech-word": true
+    }
   },
   "filters": {
     "comments": true
