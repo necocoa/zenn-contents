@@ -37,7 +37,7 @@
     },
     "prh": {
       "rulePaths": [
-        "rules.yml"
+        "prh.yml"
       ]
     },
     "spellcheck-tech-word": true
