@@ -12,7 +12,7 @@ https://railsguides.jp/routing.html
 
 ## nested resources
 
-- Prefix: ○ (単数形)
+- Prefix: ○（単数形）
 - Path: ○
 - Id: ○
 - Controller: ○

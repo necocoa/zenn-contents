@@ -19,7 +19,7 @@ published: true
 Ruby: 2.7.2
 Rails: 6.1.1
 
-webpacker を使っていない方は先に webpacker のインストールから。
+Webpacker を使っていない方は先に Webpacker のインストールから。
 
 ```sh
 bin/rails webpacker:install
@@ -37,7 +37,7 @@ https://stimulus.hotwire.dev/
 
 ## Stimulus のセットアップ
 
-webpacker 経由で stimulus をインストールします。
+Webpacker 経由で stimulus をインストールします。
 
 ```sh
 bin/rails webpacker:install:stimulus
@@ -59,11 +59,11 @@ view 側で `application.js` を読み込んでない場合は読み込みまし
 ...
 ```
 
-これで `application.js` を読み込んでいる erb 上で Stimulus が使えるようになりました。
+これで `application.js` を読み込んでいる ERB 上で Stimulus が使えるようになりました。
 
 ## Stimulus を使って実装する
 
-### `<tr>` に Stimulus で使うコントローラーをセットする
+### `<tr>` に Stimulus で使うコントローラをセットする
 
 Stimulus を使う時は HTML 要素に `data-controller` と `data-action` をセットすればすぐに使えます。
 
@@ -80,15 +80,15 @@ Stimulus を使う時は HTML 要素に `data-controller` と `data-action` を�
 
 ##### 1. `data-controller="href"`
 
-`data-controller` には JS コントローラー名をセットします。
+`data-controller` には JS コントローラ名をセットします。
 
-今回の場合 `href` という名前の JS コントローラーをセットしました。
+今回の場合 `href` という名前の JS コントローラをセットしました。
 
 ##### 2. `data-action="click->href#toHref"`
 
-`data-action` にはイベントハンドラーと実行するメソッドを指定します。イベントハンドラーを指定しない場合、要素に対しての全てのイベントで実行されます。
+`data-action` にはイベントハンドラと実行するメソッドを指定します。イベントハンドラを指定しない場合、要素に対してのすべてのイベントで実行されます。
 
-コントローラー名とメソッド名を `href#toHref` というでセットします。
+コントローラ名とメソッド名を `href#toHref` というでセットします。
 
 今回はクリック時に遷移したいので先頭に `click->` をつけます。
 
@@ -101,7 +101,7 @@ Stimulus を使う時は HTML 要素に `data-controller` と `data-action` を�
 
 ### JavaScript 部分を実装する
 
-#### コントローラーファイル作成
+#### コントローラファイル作成
 
 `<tr>` 要素をクリックした際に、指定パスに遷移する実装をします。
 
@@ -142,11 +142,11 @@ export default class extends Controller {
 
 ## 最終的なファイル構成
 
-最終的に出来上がったコードを上げておきます。以下の機能も追加しています。
+最終的にできあがったコードを上げておきます。以下の機能も追加しています。
 
 1. `<tr>` 要素をリンクタグと同じ挙動にした
    1. フォーカス対象にする
-   2. ホバーした時ポインターにする
+   2. ホバーした時ポインタにする
    3. フォーカス時に Enter を押すと遷移する
 2. そのままだと `<tr>` 子要素にあるリンクなどが動作しないので、`event#stopPropagation` を作成
 
@@ -216,6 +216,6 @@ export default class extends Controller {
 
 ## まとめ
 
-Stimulus は副作用が少なくすぐに導入できると思います。既存の jQuery を置き換えたり、処理の共通化などとても便利そうです。`partial collection` のときに起きがちな id をユニークにする処理なども一切不要になるのがとても嬉しいですね。
+Stimulus は副作用が少なくすぐに導入できると思います。既存の jQuery を置き換えたり、処理の共通化などとても便利そうです。`partial collection` のときに起きがちな id をユニークにする処理なども一切不要になるのがとてもうれしいですね。
 
 React/Vue.js を使うまでもない JavaScript を書く時に積極的に使っていこうと思います。

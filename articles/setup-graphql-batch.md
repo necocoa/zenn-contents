@@ -56,7 +56,7 @@ end
 ### Posts Resolver を作成する
 
 PostsResolver を作成します。
-返り値はわかりやすく Posts 全件にします。
+戻り値はわかりやすく Posts 全件にします。
 ページネーションについては今回は触りません。
 
 ```ruby:app/graphql/resolvers/posts_resolver.rb
@@ -130,7 +130,7 @@ $ bundle install
 ### GraphQL::Batch を有効化
 
 続いて GraphQL::Batch を有効にします。
-graphql ディレクトリ配下に任意のアプリ名の schema.rb があるので、そちらに追記します。
+graphql ディレクトリ配下に任意のアプリケーション名の schema.rb があるので、そちらに追記します。
 
 ```diff ruby:app/graphql/rails_graphql_api_schema.rb
 class RailsGraphqlApiSchema < GraphQL::Schema
@@ -149,7 +149,7 @@ GraphQL::Batch::Loader を継承した Loader を作成していきます。
 
 ### AssociationLoader を実装する
 
-Record に関連する Record をまとめて取得する Loader をつくります。
+Record に関連する Record をまとめて取得する Loader を作ります。
 
 graphql 配下に loaders ディレクトリを作成します。
 
@@ -264,7 +264,7 @@ Completed 200 OK
 
 これでシンプルな関連レコードの N+1 は解消されました。
 
-## カウンターを実装
+## カウンタを実装
 
 続いては投稿に対してのコメント数を取得してみます。
 シンプルに書くとこうですが、N+1 がでます。

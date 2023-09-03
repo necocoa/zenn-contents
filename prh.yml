@@ -1,7 +1,20 @@
 version: 1
+imports:
+  - path: node_modules/prh/prh-rules/media/WEB+DB_PRESS.yml
+    disableImports: true
+    ignoreRules:
+      - expected: Ruby
+      - expected: モジュール
+      - expected: パス
+      - expected: web
+
+  - path: node_modules/prh/prh-rules/media/techbooster.yml
+    disableImports: true
+    ignoreRules:
+      - expected: 他の
+      - expected: （$1）
+
 rules:
-  - expected: Next.js
+  - expected: Ruby
     pattern:
-      - nextjs
-      - next.js
-      - Nextjs
+      - /\bRuby\b(?!-lsp)/i
