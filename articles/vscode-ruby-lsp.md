@@ -1,11 +1,9 @@
 ---
-title: 'ruby-lsp'
+title: 'Shopify製Ruby LSPを導入し開発環境を改善する[VSCode]'
 emoji: '💎'
 type: 'tech' # tech: 技術記事 / idea: アイデア
 topics: ['rails', 'ruby', 'vscode']
-published: false
----
-
+published: true
 ---
 
 みなさんは VSCode・Ruby で開発するとき、Extention は何を入れていますか？
@@ -130,4 +128,8 @@ solargraph が消せるかは検証中。Class, Module の定義ジャンプは�
 
 https://shopify.github.io/ruby-lsp/RubyLsp/Requests/Definition.html
 
----
+#### 余談
+
+RuboCop 1.53 で rubocop にも LSP が導入され下記の記事を参考に Extention を入れてましたが、今回の Ruby LSP によって速度は改善されたので不要となっていました。
+
+https://koic.hatenablog.com/entry/rubocop-lsp
