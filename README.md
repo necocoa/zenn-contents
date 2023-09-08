@@ -8,7 +8,7 @@
 ### プレビューモード
 
 ```sh
-yarn preview
+bun run preview
 ```
 
 👀 Preview on http://localhost:8000
@@ -16,11 +16,21 @@ yarn preview
 ### 記事の作成
 
 ```sh
-yarn article
+bun run article
 ```
 
 記事の URL の一部となる slug を指定して作成できます。
 
 ```sh
-yarn article:slug article-slug
+bun run article:slug article-slug
+```
+
+## Bun
+
+https://bun.sh/
+
+### Install
+
+```
+curl -fsSL https://bun.sh/install | bash
 ```
