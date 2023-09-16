@@ -25,10 +25,10 @@
   },
   "lint-staged": {
     "./**/*.{md}": [
-      "pnpm run format",
-      "pnpm run textlint:fix"
+      "bun format",
+      "bun textlint:fix"
     ],
-    "./**/*.{json,yaml,yml}": "pnpm run format"
+    "./**/*.{json,yaml,yml}": "bun format"
   },
   "private": true
 }

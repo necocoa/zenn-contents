@@ -13,18 +13,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
+      - uses: oven-sh/setup-bun@v1
         with:
-          version: 8
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: .node-version
-          cache: "pnpm"
-      - name: Install dependencies
-        run: pnpm install
+          bun-version: latest
+      - run: bun install
 
       - name: Run format check
-        run: pnpm run format:check
+        run: bun format:check
 
       - name: Run textlint
         if: always()
