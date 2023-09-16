@@ -8,7 +8,7 @@
 ### プレビューモード
 
 ```sh
-pnpm run preview
+bun preview
 ```
 
 👀 Preview on http://localhost:8000
@@ -16,17 +16,19 @@ pnpm run preview
 ### 記事の作成
 
 ```sh
-pnpm run article
+bun article
 ```
 
 記事の URL の一部となる slug を指定して作成できます。
 
 ```sh
-pnpm run article:slug article-slug
+bun article:slug article-slug
 ```
 
-## pnpm
+## bun
+
+https://bun.sh/
 
 ```sh
-brew install pnpm
+curl -fsSL https://bun.sh/install | bash
 ```
