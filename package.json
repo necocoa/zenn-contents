@@ -1,35 +1,18 @@
 {
-  "name": "zenn_contents",
-  "version": "1.0.0",
-  "description": "Zennのコンテンツを管理",
-  "main": "index.js",
   "scripts": {
     "preview": "zenn preview",
     "article": "zenn new:article",
     "article:slug": "zenn new:article --slug",
+    "prepare": "husky install",
     "format": "prettier --write",
     "format:check": "prettier --check .",
     "format:all": "prettier --write .",
     "textlint": "textlint",
     "textlint:fix": "textlint --fix",
-    "textlint:all": "textlint --fix .",
-    "prepare": "husky install"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/necocoa/zenn-contents.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/necocoa/zenn-contents/issues"
-  },
-  "homepage": "https://github.com/necocoa/zenn-contents#readme",
-  "dependencies": {
-    "zenn-cli": "^0.1.146"
+    "textlint:all": "textlint --fix ."
   },
   "devDependencies": {
+    "zenn-cli": "^0.1.146",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
@@ -46,5 +29,6 @@
       "pnpm run textlint:fix"
     ],
     "./**/*.{json,yaml,yml}": "pnpm run format"
-  }
+  },
+  "private": true
 }

@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-dependencies:
-  zenn-cli:
-    specifier: ^0.1.146
-    version: 0.1.146
-
 devDependencies:
   husky:
     specifier: ^8.0.3
@@ -37,6 +32,9 @@ devDependencies:
   textlint-rule-prh:
     specifier: ^5.3.0
     version: 5.3.0
+  zenn-cli:
+    specifier: ^0.1.146
+    version: 0.1.146
 
 packages:
 
@@ -2581,7 +2579,7 @@ packages:
     resolution: {integrity: sha512-IjxTGvaatNpaTl/3spegOqSIOZOZG+QAllbQjlsgS3yxKRWZZ4dl2XRpTpaI5Qg9E4NCuX5EZ9+SM+9cxdzSgQ==}
     engines: {node: '>=14.0.0'}
     hasBin: true
-    dev: false
+    dev: true
 
   /zlibjs@0.3.1:
     resolution: {integrity: sha512-+J9RrgTKOmlxFSDHo0pI1xM6BLVUv+o0ZT9ANtCxGkjIVCCUdx9alUF8Gm+dGLKbkkkidWIHFDZHDMpfITt4+w==}
