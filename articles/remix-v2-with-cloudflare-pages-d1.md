@@ -3,7 +3,7 @@ title: 'Remix v2をCloudflare Pages + D1で動かすチュートリアル'
 emoji: '⛳'
 type: 'tech' # tech: 技術記事 / idea: アイデア
 topics: ['cloudflare', 'cloudflarepages', 'cloudflareworkers', 'remix', 'd1']
-published: false
+published: true
 ---
 
 Remix v2 がリリースされ、型やインタフェースが一部変更されているため、Remix + Cloudflare Pages + D1 構成を動作確認できる最小構成で試してみました。
