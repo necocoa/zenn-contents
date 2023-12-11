@@ -243,7 +243,6 @@ DB の設定をします。環境変数で変更できるようにしていま�
 
  production:
    <<: *default
-
 ```
 
 `bin/setup` をして、セットアップスクリプトを実行します。このタイミングで DB が作成されます。
@@ -286,7 +285,6 @@ class CreateUsers < ActiveRecord::Migration[7.1]
     end
   end
 end
-
 ```
 
 ```
@@ -295,7 +293,6 @@ bin/rails db:migrate
 -- create_table(:users)
    -> 0.0174s
 == 20231125041633 CreateUsers: migrated (0.0174s) =============================
-
 ```
 
 ```sh
@@ -315,7 +312,6 @@ class CreateWebauthnCredentials < ActiveRecord::Migration[7.1]
     end
   end
 end
-
 ```
 
 ```
@@ -324,7 +320,6 @@ bin/rails db:migrate
 -- create_table(:webauthn_credentials)
    -> 0.0219s
 == 20231125044030 CreateWebauthnCredentials: migrated (0.0219s) ===============
-
 ```
 
 ```ruby:backend/app/models/user.rb
@@ -339,7 +334,6 @@ class User < ApplicationRecord
                        uniqueness: { case_sensitive: false }
   validates :webauthn_id, presence: true
 end
-
 ```
 
 ```ruby:backend/app/models/webauthn_credential.rb
@@ -351,7 +345,6 @@ class WebauthnCredential < ApplicationRecord
   validates :sign_count, presence: true,
                          numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 end
-
 ```
 
 #### Setup Cookies and Sessions
@@ -465,7 +458,6 @@ WebAuthn.configure do |config|
   #
   # config.algorithms << "ES384"
 end
-
 ```
 
 ### Base controller
@@ -478,17 +470,10 @@ bin/rails g controller sessions destroy
 
 ```diff ruby:backend/config/routes.rb
  Rails.application.routes.draw do
-   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-   # Can be used by load balancers and uptime monitors to verify that the app is live.
-   get "up" => "rails/health#show", as: :rails_health_check
-
 +  resource :me, only: [:show]
 +  resource :profile, only: [:show]
 +  resource :session, only: [:destroy]
  end
-
 ```
 
 ```ruby:backend/app/controllers/mes_controller.rb
@@ -499,7 +484,6 @@ class MesController < ApplicationController
     render json: { id: current_user.id, username: current_user.username }
   end
 end
-
 ```
 
 ```ruby:backend/app/controllers/profiles_controller.rb
@@ -510,7 +494,6 @@ class ProfilesController < ApplicationController
     render json: { username: current_user.username }
   end
 end
-
 ```
 
 ```ruby:backend/app/controllers/sessions_controller.rb
@@ -520,7 +503,157 @@ class SessionsController < ApplicationController
     render json: { status: "ok" }
   end
 end
+```
 
+### Webauthn Controller
+
+```sh
+bin/rails g controller Webauthn::Attestation::Registrations create
+bin/rails g controller Webauthn::Attestation::Sessions create
+bin/rails g controller Webauthn::Assertion::Options create
+bin/rails g controller Webauthn::Assertion::Sessions create
+```
+
+```diff ruby:backend/config/routes.rb
+ Rails.application.routes.draw do
++  namespace :webauthn do
++    namespace :attestation do
++      resource :registration, only: [:create]
++      resource :session, only: [:create]
++    end
++    namespace :assertion do
++      resource :options, only: [:create]
++      resource :session, only: [:create]
++    end
++  end
+
+   resource :me, only: [:show]
+   resource :profile, only: [:show]
+   resource :session, only: [:destroy]
+ end
+```
+
+```ruby:backend/app/controllers/webauthn/attestation/registrations_controller.rb
+class Webauthn::Attestation::RegistrationsController < ApplicationController
+  def create
+    user = User.new(create_params)
+
+    unless user.update(webauthn_id: WebAuthn.generate_user_id)
+      return render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+    end
+
+    creation_options = WebAuthn::Credential.options_for_create(
+      user: { id: user.webauthn_id, name: user.username },
+      exclude: user.webauthn_credentials.pluck(:webauthn_id)
+    )
+
+    # Store the newly generated challenge somewhere so you can have it
+    # for the verification phase.
+    session[:webauthn_challenge] = creation_options.challenge
+    session[:webauthn_user_id] = user.id
+
+    # Send `creation_options` back to the browser, so that they can be used
+    # to call `navigator.credentials.create({ "publicKey": creationOptions })`
+    render json: creation_options
+  end
+
+  private
+
+  def create_params
+    params.require(:registration).permit(:username)
+  end
+end
+```
+
+```ruby:backend/app/controllers/webauthn/attestation/sessions_controller.rb
+class Webauthn::Attestation::SessionsController < ApplicationController
+  def create
+    if session[:webauthn_challenge].nil?
+      return render json: { error: "No challenge found in session" }, status: :unprocessable_entity
+    end
+
+    webauthn_credential = WebAuthn::Credential.from_create(create_params)
+
+    begin
+      webauthn_credential.verify(session[:webauthn_challenge])
+
+      user = User.find(session[:webauthn_user_id])
+
+      user.webauthn_credentials.create!(
+        webauthn_id: webauthn_credential.id,
+        public_key: webauthn_credential.public_key,
+        sign_count: webauthn_credential.sign_count
+      )
+
+      session[:user_id] = user.id
+      session.delete(:webauthn_challenge)
+      session.delete(:webauthn_user_id)
+    rescue WebAuthn::VerificationError, WebAuthn::Error => e
+      return render json: { error: e.message }, status: :unprocessable_entity
+    end
+
+    render json: { status: "ok" }
+  end
+
+  private
+
+  def create_params
+    params.require(:session).permit(
+      :id, :rawId, :type, :authenticatorAttachment,
+      clientExtensionResults: {},
+      response: [:attestationObject, :clientDataJSON, { transports: [] }]
+    )
+  end
+end
+```
+
+```ruby:backend/app/controllers/webauthn/assertion/options_controller.rb
+class Webauthn::Assertion::OptionsController < ApplicationController
+  def create
+    options = WebAuthn::Credential.options_for_get
+    session[:webauthn_challenge] = options.challenge
+    render json: options
+  end
+end
+```
+
+```ruby:backend/app/controllers/webauthn/assertion/sessions_controller.rb
+class Webauthn::Assertion::SessionsController < ApplicationController
+  def create
+    webauthn_credential = WebAuthn::Credential.from_get(create_params)
+    stored_credential = WebauthnCredential.find_by!(webauthn_id: webauthn_credential.id)
+
+    begin
+      webauthn_credential.verify(
+        session[:webauthn_challenge],
+        public_key: stored_credential.public_key,
+        sign_count: stored_credential.sign_count
+      )
+
+      stored_credential.update!(sign_count: webauthn_credential.sign_count)
+
+      session[:user_id] = stored_credential.user.id
+      session.delete(:webauthn_challenge)
+    rescue WebAuthn::SignCountVerificationError, WebAuthn::Error => e
+      # Cryptographic verification of the authenticator data succeeded, but the signature counter was less then or equal
+      # to the stored value. This can have several reasons and depending on your risk tolerance you can choose to fail or
+      # pass authentication. For more information see https://www.w3.org/TR/webauthn/#sign-counter
+      return render json: { error: e.message }, status: :unprocessable_entity
+    end
+
+    render json: { status: "ok" }
+  end
+
+  private
+
+  def create_params
+    params.require(:session).permit(
+      :id, :rawId, :type, :authenticatorAttachment,
+      clientExtensionResults: {},
+      response: [:clientDataJSON, :authenticatorData, :signature, :userHandle]
+    )
+  end
+end
 ```
 
 ## Frontend
