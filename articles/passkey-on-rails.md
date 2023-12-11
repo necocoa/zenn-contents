@@ -1,12 +1,31 @@
-## Setup
+この記事は STORES Advent Calendar 2023 22 日目の記事です。
 
-## Frontend
+こんにちは STORES 予約開発チームでエンジニアリングマネージャーをしています、なつめです。
+昨今 Passkeys が各サービスで導入されており、勢いを感じています。
 
-```sh
-npx create-remix@latest --template remix-run/remix/templates/cloudflare-pages
-```
+個人では 1password のパスワードマネージャーを使っています。Passkeys でのログインは ID/PW/OTA の autofill などに比べて 1step 省略される程度ですがログイン体験が良いと思っており、導入されていたらどんどん切り替えています。セキュアになる点は ID/PW と併用されているサービスがほぼで、まだ過渡期だなという感じです。
+
+個人的に Passkeys の実際の挙動や導入する時の開発コストを知りたく、ガチャガチャ触ってみよう！ということで Passkeys 入門 Rails 編をやっていきます！
+
+Passkeys の解説については STORES Advent Calendar 2023 2 日目に soh さんが解説していますので、ご参考までに。
+https://product.st.inc/entry/2023/11/13/120000
+
+この記事ではとりあえず触ろう！をコンセプトに解説をスキップしています。（詳しい方に丸投げ）
+
+## 構成
+
+Backend は普段のアプリケーションで使っている Rails, Frontend はサクッと試せる Remix で作ってみました。それぞれディレクトリを分けつつ、ワンリポジトリで作っています。
+
+- Backend
+
+  - Ruby on Rails(API mode) v7.1.2
+
+- Frontend
+  - Remix v2.3.1
 
 ## Base setup
+
+ベースのリポジトリを作成します。
 
 ```sh
 mkdir passkey-on-rails
@@ -14,9 +33,11 @@ cd passkey-on-rails
 git init
 ```
 
+Rails と Remix はローカルで、Postgres と Redis は Docker で立てます。
+
 ```sh
 docker run -d -p 5432:5432 --name passkey-on-rails-db \
--v passkey-on-rails-db:/var/lib/postgresql/data:cached \
+-v passkey-on-rails-db:/var/lib/postgresql/data \
 -e POSTGRES_USER=postgres \
 -e POSTGRES_PASSWORD=password \
 postgres
@@ -24,20 +45,25 @@ postgres
 
 ```sh
 docker run -d -p 6379:6379 --name passkey-on-rails-redis \
--v passkey-on-rails-redis:/data:cached \
+-v passkey-on-rails-redis:/data \
 redis
 ```
 
 ## Backend
 
-### Setup
+### Base Setup
+
+backend のディレクトリを切って、そこで rails new していきます。今回は API mode かつ minimal で作成します。
+
+自動で backend 配下に Git init されるので new した後に削除しています。
+`--skip-git` だと .gitignore などが作成されないため、使っていません。
 
 ```sh
 mkdir backend
 cd backend
 
 bundle init
-bundle add rails --version "~> 7.1.2"
+bundle add rails --version "7.1.2"
 
 bundle exec rails _7.1.2_ new . -d postgresql --api --minimal --skip-test --skip-docker --force
 rm -rf .git
@@ -193,6 +219,8 @@ Writing lockfile to /Users/nat/work/rails/test/passkey-on-rails/backend/Gemfile.
 
 ### Database setup
 
+DB の設定をします。環境変数で変更できるようにしていますが、ローカル上では fetch の後にセットしているデフォルト値を用います。
+
 ```diff yml:backend/config/database.yml
  default: &default
    adapter: postgresql
@@ -218,6 +246,8 @@ Writing lockfile to /Users/nat/work/rails/test/passkey-on-rails/backend/Gemfile.
 
 ```
 
+`bin/setup` をして、セットアップスクリプトを実行します。このタイミングで DB が作成されます。
+
 ```sh
 bin/setup
 == Installing dependencies ==
@@ -233,6 +263,13 @@ The Gemfile's dependencies are satisfied
 ### Feature
 
 ### Base models
+
+Model を作成します。
+
+- User
+  - ユーザー情報を保持する
+- WebauthnCredential
+  - Passkeys の認証情報を保持する
 
 ```sh
 bin/rails g model user
@@ -319,10 +356,12 @@ end
 
 #### Setup Cookies and Sessions
 
-Redis を使って Sessions を管理します。
-API mode だと Cookies も無効になっているので、有効にしていきます。
+ブラウザと認証情報をやりとりするため Cookies と Sessions の設定をします。
 
-今回は `redis-session-store` を使います。
+今回は Redis を使って Sessions を管理します。
+API mode だと Cookies も無効になっているので有効にしていきます。
+
+session_store には `redis-session-store` という gem を使います。
 
 ```sh
 bundle add redis-session-store
@@ -339,7 +378,6 @@ bundle add redis-session-store
 +    config.middleware.use ActionDispatch::Cookies
 +    config.session_store :redis_session_store,
 +      key: "app_sid",
-+      serializer: :json,
 +      httponly: true,
 +      secure: Rails.env.production?,
 +      same_site: :lax,
@@ -354,6 +392,9 @@ bundle add redis-session-store
  end
 
 ```
+
+Controller 側も有効にします。
+ついでに、認証ユーザー、認証必須とするメソッドも作っておきます。
 
 ```diff ruby:backend/app/controllers/application_controller.rb
  class ApplicationController < ActionController::API
@@ -378,6 +419,8 @@ bundle add redis-session-store
 ```
 
 ### Setup Webauthn
+
+Webauthn を簡単に扱える `webauthn-ruby` を使って Passkeys に必要な処理を行います。
 
 https://github.com/cedarcode/webauthn-ruby
 
@@ -427,31 +470,6 @@ end
 
 ### Base controller
 
-簡素な認証ユーザー取得と認証必須のメソッドを作成します。
-
-```diff ruby:backend/app/controllers/application_controller.rb
- class ApplicationController < ActionController::API
-   include ActionController::Cookies
-+
-+  private
-+
-+  def current_user
-+    return @current_user if defined?(@current_user)
-+
-+    @current_user = if session[:user_id].present?
-+                      User.find_by(id: session[:user_id])
-+                    end
-+  end
-+
-+  def authenticate_user!
-+    unless current_user
-+      render json: { status: "unauthorized" }, status: :unauthorized
-+    end
-+  end
- end
-
-```
-
 ```
 bin/rails g controller mes show
 bin/rails g controller profiles show
@@ -473,7 +491,41 @@ bin/rails g controller sessions destroy
 
 ```
 
+```ruby:backend/app/controllers/mes_controller.rb
+class MesController < ApplicationController
+  before_action :authenticate_user!
+
+  def show
+    render json: { id: current_user.id, username: current_user.username }
+  end
+end
+
+```
+
+```ruby:backend/app/controllers/profiles_controller.rb
+class ProfilesController < ApplicationController
+  before_action :authenticate_user!
+
+  def show
+    render json: { username: current_user.username }
+  end
+end
+
+```
+
+```ruby:backend/app/controllers/sessions_controller.rb
+class SessionsController < ApplicationController
+  def destroy
+    reset_session
+    render json: { status: "ok" }
+  end
+end
+
+```
+
 ## Frontend
+
+続いては Frontend を作っていきます。
 
 https://remix.run/docs/en/main/guides/templates#official-templates
 
@@ -527,6 +579,19 @@ cd frontend
 + 20.10.0
 ```
 
+```sh
+touch .example.dev.vars
+```
+
+```diff sh:.example.dev.vars
++ API_URL="http://localhost:3000"
+
+```
+
+```sh
+cp .example.dev.vars .dev.vars
+```
+
 ### CSS
 
 ```
@@ -558,6 +623,608 @@ export default {
 
 ```
 
+`webauthn-json`
+
 ```
 npm install @github/webauthn-json
+```
+
+### UI を作っていく
+
+```ts:frontend/app/root.tsx
+import {
+  Links,
+  LiveReload,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useLoaderData,
+} from "@remix-run/react";
+import stylesheet from "~/tailwind.css";
+import { authentication } from "./utils/auth.server";
+import { Header } from "./compornents/Header";
+import {
+  json,
+  type LinksFunction,
+  type LoaderFunctionArgs,
+} from "@remix-run/cloudflare";
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: stylesheet },
+];
+
+export const loader = async ({ request, context }: LoaderFunctionArgs) => {
+  const { user } = await authentication(request, context);
+  return json({ user });
+};
+
+export default function App() {
+  const { user } = useLoaderData<typeof loader>();
+
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <div
+          className="grid bg-base-200"
+          style={{ minHeight: "100lvh;", gridTemplateRows: "auto 1fr auto;" }}
+        >
+          <Header user={user} />
+          <main>
+            <Outlet />
+          </main>
+        </div>
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
+      </body>
+    </html>
+  );
+}
+
+```
+
+```ts:frontend/app/compornents/Header.tsx
+import { Form, Link } from "@remix-run/react";
+
+type Props = {
+  user: any;
+};
+
+export function Header({ user }: Props) {
+  return (
+    <header className="navbar bg-base-100">
+      <div className="flex-1">
+        <Link to={"/"} className="btn btn-ghost text-xl normal-case">
+          Passkey App
+        </Link>
+      </div>
+      {user && (
+        <div className="flex-none">
+          <div className="dropdown dropdown-end">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-circle btn-ghost normal-case"
+            >
+              {user.username}
+            </div>
+            <ul
+              tabIndex={0}
+              className="menu dropdown-content rounded-box menu-sm z-10 mt-3 w-52 bg-base-100 p-2 shadow"
+            >
+              <li>
+                <Link to={"/profile"}>Profile</Link>
+              </li>
+              <li>
+                <Form method="post" action="/session/destroy">
+                  <button type="submit">Logout</button>
+                </Form>
+              </li>
+            </ul>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}
+
+```
+
+```ts:frontend/app/routes/_auth.sign-in.passkey.tsx
+import { json, redirect } from "@remix-run/cloudflare";
+import { getApiUrl } from "~/utils/api.server";
+import type { ActionFunctionArgs } from "@remix-run/cloudflare";
+
+export const action = async ({ request, context }: ActionFunctionArgs) => {
+  const apiUrl = getApiUrl(context);
+
+  const formData = await request.formData();
+  const credential = formData.get("credential");
+
+  const response = await fetch(`${apiUrl}/webauthn/assertion/session`, {
+    method: "POST",
+    body: credential,
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json; charset=utf-8",
+      Cookie: request.headers.get("Cookie") || "",
+    },
+  });
+  const cookie = response.headers.get("Set-Cookie") || "";
+  if (!response.ok) {
+    const error = await response.json();
+    throw json(
+      { error },
+      { status: response.status, headers: { "Set-Cookie": cookie } }
+    );
+  }
+
+  return redirect("/profile", {
+    status: 303,
+    headers: { "Set-Cookie": cookie },
+  });
+};
+
+```
+
+```ts:frontend/app/routes/_auth.sign-in.tsx
+import { Form, useLoaderData, useSubmit } from "@remix-run/react";
+import { json } from "@remix-run/cloudflare";
+import { get } from "@github/webauthn-json";
+import { getApiUrl } from "~/utils/api.server";
+import type { FormEventHandler } from "react";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import type {
+  CredentialRequestOptionsJSON,
+  PublicKeyCredentialRequestOptionsJSON,
+} from "node_modules/@github/webauthn-json/dist/types/basic/json";
+
+export const meta: MetaFunction = () => {
+  return [{ title: "Sign In" }];
+};
+
+export const loader = async ({ request, context }: LoaderFunctionArgs) => {
+  const apiUrl = getApiUrl(context);
+
+  const response = await fetch(`${apiUrl}/webauthn/assertion/options`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json; charset=utf-8",
+      "Set-Cookie": request.headers.get("Cookie") || "",
+    },
+  });
+  const cookie = response.headers.get("Set-Cookie") || "";
+  if (!response.ok) {
+    throw json(
+      { message: "Failed to fetch credential options" },
+      {
+        status: 500,
+        headers: { "Set-Cookie": cookie },
+      }
+    );
+  }
+
+  const options =
+    (await response.json()) as PublicKeyCredentialRequestOptionsJSON;
+  return json(
+    { credential: { publicKey: options } },
+    {
+      status: 200,
+      headers: { "Set-Cookie": cookie },
+    }
+  );
+};
+
+export default function SignIn() {
+  const submit = useSubmit();
+  const { credential } = useLoaderData<typeof loader>();
+
+  const onSubmit: FormEventHandler = async (event) => {
+    event.preventDefault();
+    const credentialWithAssertion = await get(
+      credential as CredentialRequestOptionsJSON
+    );
+    const formData = new FormData();
+    formData.append("credential", JSON.stringify(credentialWithAssertion));
+    submit(formData, { action: "/sign-in/passkey", method: "post" });
+  };
+
+  return (
+    <div className="hero h-full">
+      <div className="hero-content w-screen">
+        <div className="card w-96 bg-neutral text-neutral-content">
+          <Form method="post" onSubmit={onSubmit}>
+            <div className="card-body">
+              <h2 className="card-title">Sign In with a passkey</h2>
+              <div className="card-actions">
+                <button type="submit" className="btn btn-primary w-full">
+                  Sign in with a passkey
+                </button>
+              </div>
+            </div>
+          </Form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+```
+
+```ts:frontend/app/routes/_auth.sign-up.passkey.tsx
+import { json, redirect } from "@remix-run/cloudflare";
+import { getApiUrl } from "~/utils/api.server";
+import type { ActionFunctionArgs } from "@remix-run/cloudflare";
+
+export const action = async ({ request, context }: ActionFunctionArgs) => {
+  const apiUrl = getApiUrl(context);
+
+  const formData = await request.formData();
+  const credential = formData.get("credential");
+
+  const response = await fetch(`${apiUrl}/webauthn/attestation/session`, {
+    method: "POST",
+    body: credential,
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json; charset=utf-8",
+      Cookie: request.headers.get("Cookie") || "",
+    },
+  });
+  const cookie = response.headers.get("Set-Cookie") || "";
+  if (!response.ok) {
+    const error = await response.json();
+    throw json(
+      { error },
+      { status: response.status, headers: { "Set-Cookie": cookie } }
+    );
+  }
+
+  return redirect("/profile", {
+    status: 303,
+    headers: { "Set-Cookie": cookie },
+  });
+};
+
+```
+
+```ts:frontend/app/routes/_auth.sign-up.tsx
+import { useCallback, useEffect } from "react";
+import { Form, useActionData, useSubmit } from "@remix-run/react";
+import { json } from "@remix-run/cloudflare";
+import { create } from "@github/webauthn-json";
+import { getApiUrl } from "~/utils/api.server";
+import type { ActionFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import type { CredentialCreationOptionsJSON } from "@github/webauthn-json/browser-ponyfill";
+import type { PublicKeyCredentialCreationOptionsJSON } from "node_modules/@github/webauthn-json/dist/types/basic/json";
+
+export const meta: MetaFunction = () => {
+  return [{ title: "Sign Up" }];
+};
+
+export const action = async ({ request, context }: ActionFunctionArgs) => {
+  const apiUrl = getApiUrl(context);
+
+  const formData = await request.formData();
+  const username = formData.get("username");
+
+  const response = await fetch(`${apiUrl}/webauthn/attestation/registration`, {
+    method: "POST",
+    body: JSON.stringify({ username }),
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json; charset=utf-8",
+      Cookie: request.headers.get("Cookie") || "",
+    },
+  });
+  const cookie = response.headers.get("Set-Cookie") || "";
+  if (!response.ok) {
+    const error = await response.json();
+    return json(
+      { credential: null, error },
+      { status: response.status, headers: { "Set-Cookie": cookie } }
+    );
+  }
+
+  const options =
+    (await response.json()) as PublicKeyCredentialCreationOptionsJSON;
+  return json(
+    { credential: { publicKey: options } },
+    { status: response.status, headers: { "Set-Cookie": cookie } }
+  );
+};
+
+export default function SignUp() {
+  const submit = useSubmit();
+  const actionData = useActionData<typeof action>();
+
+  const createCredential = useCallback(async () => {
+    if (actionData?.credential == null) {
+      return;
+    }
+
+    const credentialWithAttestation = await create(
+      actionData.credential as CredentialCreationOptionsJSON
+    );
+    const formData = new FormData();
+    formData.append("credential", JSON.stringify(credentialWithAttestation));
+    submit(formData, {
+      action: "/sign-up/passkey",
+      method: "post",
+    });
+  }, [actionData, submit]);
+
+  useEffect(() => {
+    createCredential();
+  }, [actionData, createCredential]);
+
+  return (
+    <div className="hero h-full">
+      <div className="hero-content w-screen">
+        <div className="card w-96 bg-neutral text-neutral-content">
+          <Form method="post">
+            <div className="card-body">
+              <h2 className="card-title">Sign Up</h2>
+              <div className="form-control">
+                <label
+                  htmlFor="username"
+                  className="label label-text text-neutral-content"
+                >
+                  Username
+                </label>
+                <input
+                  id="username"
+                  type="username"
+                  name="username"
+                  placeholder="Username"
+                  className="input input-bordered"
+                  required
+                />
+              </div>
+              <div className="card-actions">
+                <button type="submit" className="btn btn-primary w-full">
+                  Sign up
+                </button>
+              </div>
+            </div>
+          </Form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+```
+
+```ts:frontend/app/routes/_auth.tsx
+import { redirect, type LoaderFunctionArgs } from "@remix-run/cloudflare";
+import { isAuthenticated } from "~/utils/auth.server";
+
+export const loader = async ({ request, context }: LoaderFunctionArgs) => {
+  if (await isAuthenticated(request, context)) {
+    throw redirect("/profile", {
+      headers: { "Set-Cookie": request.headers.get("Cookie") || "" },
+    });
+  }
+  return null;
+};
+
+```
+
+```ts:frontend/app/routes/_index.tsx
+import { Link, useLoaderData } from "@remix-run/react";
+import { isAuthenticated } from "~/utils/auth.server";
+import {
+  json,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from "@remix-run/cloudflare";
+
+export const meta: MetaFunction = () => {
+  return [{ title: "Let's try passkey" }];
+};
+
+export const loader = async ({ request, context }: LoaderFunctionArgs) => {
+  const authenticated = await isAuthenticated(request, context);
+  return json({ authenticated });
+};
+
+export default function Index() {
+  const { authenticated } = useLoaderData<typeof loader>();
+
+  return (
+    <div className="hero h-full">
+      <div className="hero-content w-screen">
+        <div className="card w-96 bg-neutral text-neutral-content">
+          <div className="card-body items-center text-center">
+            <h2 className="card-title">Passkey App!</h2>
+            <div className="card-actions justify-end">
+              {authenticated ? (
+                <>
+                  <div>
+                    <Link
+                      to={"/profile"}
+                      className="btn btn-primary normal-case"
+                    >
+                      Profile
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <Link
+                      to={"/sign-up"}
+                      className="btn btn-primary normal-case"
+                    >
+                      Sign up
+                    </Link>
+                  </div>
+                  <div>
+                    <Link
+                      to={"/sign-in"}
+                      className="btn btn-secondary normal-case"
+                    >
+                      Sign in
+                    </Link>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+```
+
+```ts:frontend/app/routes/profile.tsx
+import { Form, useLoaderData } from "@remix-run/react";
+import { json } from "@remix-run/cloudflare";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import { getApiUrl } from "~/utils/api.server";
+
+export const meta: MetaFunction = () => {
+  return [{ title: "Profile" }];
+};
+
+export const loader = async ({ request, context }: LoaderFunctionArgs) => {
+  const apiUrl = getApiUrl(context);
+
+  const response = await fetch(`${apiUrl}/profile`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json; charset=utf-8",
+      Cookie: request.headers.get("Cookie") || "",
+    },
+  });
+
+  const cookie = response.headers.get("Set-Cookie") || "";
+  if (!response.ok)
+    throw json(
+      {},
+      { status: response.status, headers: { "Set-Cookie": cookie } }
+    );
+  const profile = (await response.json()) as { username: string };
+  return json({ profile }, { status: 200, headers: { "Set-Cookie": cookie } });
+};
+
+export default function Profile() {
+  const { profile } = useLoaderData<typeof loader>();
+
+  return (
+    <div className="hero h-full">
+      <div className="hero-content w-screen">
+        <div className="card w-96 bg-neutral text-neutral-content">
+          <Form method="post" action="/session/destroy">
+            <div className="card-body">
+              <h2 className="card-title">Profile</h2>
+              <p>Name: {profile.username}</p>
+              <div className="card-actions justify-end">
+                <button className="btn btn-neutral">Logout</button>
+              </div>
+            </div>
+          </Form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+```
+
+```ts:frontend/app/routes/session.destroy.tsx
+import { redirect } from "@remix-run/cloudflare";
+import type { ActionFunctionArgs } from "@remix-run/cloudflare";
+import { getApiUrl } from "~/utils/api.server";
+
+export const action = async ({ context, request }: ActionFunctionArgs) => {
+  const apiUrl = getApiUrl(context);
+
+  const response = await fetch(`${apiUrl}/session`, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json; charset=utf-8",
+      Cookie: request.headers.get("Cookie") || "",
+    },
+  });
+
+  const cookie = response.headers.get("Set-Cookie") || "";
+  return redirect("/", { headers: { "Set-Cookie": cookie } });
+};
+
+```
+
+```ts:frontend/app/utils/api.server.ts
+import type { AppLoadContext } from "@remix-run/cloudflare";
+import type { Env } from "~/global";
+
+export const getApiUrl = (context: AppLoadContext) => {
+  const env = context.env as Env;
+  return env.API_URL;
+};
+
+```
+
+```ts:frontend/app/utils/auth.server.ts
+import type { AppLoadContext } from "@remix-run/cloudflare";
+import { getApiUrl } from "./api.server";
+
+type AuthUserType = {
+  id: string;
+  username: string;
+};
+
+export const authentication = async (
+  request: Request,
+  context: AppLoadContext
+) => {
+  const apiUrl = getApiUrl(context);
+  const response = await fetch(`${apiUrl}/me`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json; charset=utf-8",
+      Cookie: request.headers.get("Cookie") || "",
+    },
+  });
+
+  const cookie = response.headers.get("Set-Cookie") || "";
+
+  if (response.ok) {
+    const user = (await response.json()) as AuthUserType;
+    return { user, cookie };
+  } else {
+    return { user: null, cookie };
+  }
+};
+
+export const isAuthenticated = async (
+  request: Request,
+  context: AppLoadContext
+) => {
+  const apiUrl = getApiUrl(context);
+  const response = await fetch(`${apiUrl}/me`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json; charset=utf-8",
+      Cookie: request.headers.get("Cookie") || "",
+    },
+  });
+  return response.ok;
+};
+
 ```
