@@ -2,6 +2,7 @@
   "recommendations": [
     "taichi.vscode-textlint",
     "esbenp.prettier-vscode",
-    "yzhang.markdown-all-in-one"
+    "yzhang.markdown-all-in-one",
+    "zenn.zenn-preview"
   ]
 }
