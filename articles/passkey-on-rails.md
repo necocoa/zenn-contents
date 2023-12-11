@@ -53,9 +53,9 @@ redis
 
 ### Base Setup
 
-backend のディレクトリを切って、そこで rails new していきます。今回は API mode かつ minimal で作成します。
+backend のディレクトリを切って、そこに `rails new` していきます。今回は API mode かつ minimal のオプションを付けて作成します。
 
-自動で backend 配下に Git init されるので new した後に削除しています。
+自動で backend 配下に `git init` されるので new した後に削除しています。
 `--skip-git` だと .gitignore などが作成されないため、使っていません。
 
 ```sh
@@ -526,6 +526,7 @@ end
 ## Frontend
 
 続いては Frontend を作っていきます。
+`create-remix` の cloudflare-pages テンプレートを使って Remix をセットアップします。
 
 https://remix.run/docs/en/main/guides/templates#official-templates
 
@@ -533,9 +534,13 @@ https://remix.run/docs/en/main/guides/templates#official-templates
 npx create-remix@2.3.1 --template remix-run/remix/templates/cloudflare-pages
 ```
 
-- frontend というディレクトリで作成します。
-- Git は不要です
-- npm install はしましょう
+対話形式で以下の内容にする。
+
+- frontend ディレクトリ配下に作成
+- Git は不要
+- npm install する
+
+:::details create-remix logs
 
 ```sh
 npx create-remix@2.3.1 --template remix-run/remix/templates/cloudflare-pages
@@ -568,24 +573,30 @@ Ok to proceed? (y)
 
 ```
 
+:::
+
 以下は frontend ディレクトリで作業します。
 
 ```sh
 cd frontend
 ```
 
-```diff .node-version
+Node.js のバージョンが 18.0.0 になっているので、最新にします。
+
+```diff :frontend/.node-version
 - 18.0.0
 + 20.10.0
 ```
+
+API の向き先を指定するために ENV ファイルを作成します。
+cloudflare workers 上で環境変数を読み込む `.dev.vars` を作成します。
 
 ```sh
 touch .example.dev.vars
 ```
 
-```diff sh:.example.dev.vars
-+ API_URL="http://localhost:3000"
-
+```sh:frontend/.example.dev.vars
+API_URL="http://localhost:3000"
 ```
 
 ```sh
@@ -594,11 +605,13 @@ cp .example.dev.vars .dev.vars
 
 ### CSS
 
-```
+Tailwind CSS ベースのコンポーネントである Daisy UI を使ってみます。
+
+```sh
 npm install --save-dev tailwindcss daisyui
 ```
 
-```
+```sh
 touch tailwind.config.ts
 touch app/tailwind.css
 ```
@@ -613,46 +626,34 @@ export default {
   },
   plugins: [require("daisyui")],
 } satisfies Config;
-
 ```
 
 ```css:frontend/app/tailwind.css
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 ```
+
+stylesheet の読み込みは後で変更します。
+
+### Webauthn-json
 
 `webauthn-json`
 
-```
+```sh
 npm install @github/webauthn-json
 ```
 
 ### UI を作っていく
 
 ```ts:frontend/app/root.tsx
-import {
-  Links,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  useLoaderData,
-} from "@remix-run/react";
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
+import { json, type LinksFunction, type LoaderFunctionArgs } from "@remix-run/cloudflare";
 import stylesheet from "~/tailwind.css";
 import { authentication } from "./utils/auth.server";
 import { Header } from "./compornents/Header";
-import {
-  json,
-  type LinksFunction,
-  type LoaderFunctionArgs,
-} from "@remix-run/cloudflare";
 
-export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: stylesheet },
-];
+export const links: LinksFunction = () => [{ rel: "stylesheet", href: stylesheet }];
 
 export const loader = async ({ request, context }: LoaderFunctionArgs) => {
   const { user } = await authentication(request, context);
@@ -671,10 +672,7 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <div
-          className="grid bg-base-200"
-          style={{ minHeight: "100lvh;", gridTemplateRows: "auto 1fr auto;" }}
-        >
+        <div className="grid bg-base-200" style={{ minHeight: "100lvh", gridTemplateRows: "auto 1fr auto" }}>
           <Header user={user} />
           <main>
             <Outlet />
@@ -687,14 +685,15 @@ export default function App() {
     </html>
   );
 }
-
 ```
 
 ```ts:frontend/app/compornents/Header.tsx
 import { Form, Link } from "@remix-run/react";
+import type { SerializeFrom } from "@remix-run/cloudflare";
+import type { AuthUser } from "~/utils/auth";
 
 type Props = {
-  user: any;
+  user: SerializeFrom<AuthUser> | null;
 };
 
 export function Header({ user }: Props) {
@@ -708,11 +707,7 @@ export function Header({ user }: Props) {
       {user && (
         <div className="flex-none">
           <div className="dropdown dropdown-end">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-circle btn-ghost normal-case"
-            >
+            <div tabIndex={0} role="button" className="btn btn-ghost normal-case">
               {user.username}
             </div>
             <ul
@@ -734,13 +729,11 @@ export function Header({ user }: Props) {
     </header>
   );
 }
-
 ```
 
 ```ts:frontend/app/routes/_auth.sign-in.passkey.tsx
-import { json, redirect } from "@remix-run/cloudflare";
+import { json, redirect, type ActionFunctionArgs } from "@remix-run/cloudflare";
 import { getApiUrl } from "~/utils/api.server";
-import type { ActionFunctionArgs } from "@remix-run/cloudflare";
 
 export const action = async ({ request, context }: ActionFunctionArgs) => {
   const apiUrl = getApiUrl(context);
@@ -753,17 +746,14 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
     body: credential,
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json; charset=utf-8",
+      "Content-Type": "application/json",
       Cookie: request.headers.get("Cookie") || "",
     },
   });
   const cookie = response.headers.get("Set-Cookie") || "";
   if (!response.ok) {
     const error = await response.json();
-    throw json(
-      { error },
-      { status: response.status, headers: { "Set-Cookie": cookie } }
-    );
+    throw json({ error }, { status: response.status, headers: { "Set-Cookie": cookie } });
   }
 
   return redirect("/profile", {
@@ -771,20 +761,18 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
     headers: { "Set-Cookie": cookie },
   });
 };
-
 ```
 
 ```ts:frontend/app/routes/_auth.sign-in.tsx
-import { Form, useLoaderData, useSubmit } from "@remix-run/react";
-import { json } from "@remix-run/cloudflare";
-import { get } from "@github/webauthn-json";
-import { getApiUrl } from "~/utils/api.server";
 import type { FormEventHandler } from "react";
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import { Form, useLoaderData, useSubmit } from "@remix-run/react";
+import { json, type LoaderFunctionArgs, type MetaFunction } from "@remix-run/cloudflare";
+import { get } from "@github/webauthn-json";
 import type {
   CredentialRequestOptionsJSON,
   PublicKeyCredentialRequestOptionsJSON,
 } from "node_modules/@github/webauthn-json/dist/types/basic/json";
+import { getApiUrl } from "~/utils/api.server";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Sign In" }];
@@ -792,12 +780,11 @@ export const meta: MetaFunction = () => {
 
 export const loader = async ({ request, context }: LoaderFunctionArgs) => {
   const apiUrl = getApiUrl(context);
-
   const response = await fetch(`${apiUrl}/webauthn/assertion/options`, {
     method: "POST",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json; charset=utf-8",
+      "Content-Type": "application/json",
       "Set-Cookie": request.headers.get("Cookie") || "",
     },
   });
@@ -806,14 +793,13 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
     throw json(
       { message: "Failed to fetch credential options" },
       {
-        status: 500,
+        status: response.status,
         headers: { "Set-Cookie": cookie },
       }
     );
   }
 
-  const options =
-    (await response.json()) as PublicKeyCredentialRequestOptionsJSON;
+  const options = (await response.json()) as PublicKeyCredentialRequestOptionsJSON;
   return json(
     { credential: { publicKey: options } },
     {
@@ -829,9 +815,7 @@ export default function SignIn() {
 
   const onSubmit: FormEventHandler = async (event) => {
     event.preventDefault();
-    const credentialWithAssertion = await get(
-      credential as CredentialRequestOptionsJSON
-    );
+    const credentialWithAssertion = await get(credential as CredentialRequestOptionsJSON);
     const formData = new FormData();
     formData.append("credential", JSON.stringify(credentialWithAssertion));
     submit(formData, { action: "/sign-in/passkey", method: "post" });
@@ -856,13 +840,11 @@ export default function SignIn() {
     </div>
   );
 }
-
 ```
 
 ```ts:frontend/app/routes/_auth.sign-up.passkey.tsx
-import { json, redirect } from "@remix-run/cloudflare";
+import { json, redirect, type ActionFunctionArgs } from "@remix-run/cloudflare";
 import { getApiUrl } from "~/utils/api.server";
-import type { ActionFunctionArgs } from "@remix-run/cloudflare";
 
 export const action = async ({ request, context }: ActionFunctionArgs) => {
   const apiUrl = getApiUrl(context);
@@ -875,17 +857,14 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
     body: credential,
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json; charset=utf-8",
+      "Content-Type": "application/json",
       Cookie: request.headers.get("Cookie") || "",
     },
   });
   const cookie = response.headers.get("Set-Cookie") || "";
   if (!response.ok) {
     const error = await response.json();
-    throw json(
-      { error },
-      { status: response.status, headers: { "Set-Cookie": cookie } }
-    );
+    throw json({ error }, { status: response.status, headers: { "Set-Cookie": cookie } });
   }
 
   return redirect("/profile", {
@@ -893,18 +872,17 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
     headers: { "Set-Cookie": cookie },
   });
 };
-
 ```
 
 ```ts:frontend/app/routes/_auth.sign-up.tsx
 import { useCallback, useEffect } from "react";
 import { Form, useActionData, useSubmit } from "@remix-run/react";
 import { json } from "@remix-run/cloudflare";
-import { create } from "@github/webauthn-json";
-import { getApiUrl } from "~/utils/api.server";
 import type { ActionFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import { create } from "@github/webauthn-json";
 import type { CredentialCreationOptionsJSON } from "@github/webauthn-json/browser-ponyfill";
 import type { PublicKeyCredentialCreationOptionsJSON } from "node_modules/@github/webauthn-json/dist/types/basic/json";
+import { getApiUrl } from "~/utils/api.server";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Sign Up" }];
@@ -921,25 +899,18 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
     body: JSON.stringify({ username }),
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json; charset=utf-8",
+      "Content-Type": "application/json",
       Cookie: request.headers.get("Cookie") || "",
     },
   });
   const cookie = response.headers.get("Set-Cookie") || "";
   if (!response.ok) {
     const error = await response.json();
-    return json(
-      { credential: null, error },
-      { status: response.status, headers: { "Set-Cookie": cookie } }
-    );
+    return json({ credential: null, error }, { status: response.status, headers: { "Set-Cookie": cookie } });
   }
 
-  const options =
-    (await response.json()) as PublicKeyCredentialCreationOptionsJSON;
-  return json(
-    { credential: { publicKey: options } },
-    { status: response.status, headers: { "Set-Cookie": cookie } }
-  );
+  const options = (await response.json()) as PublicKeyCredentialCreationOptionsJSON;
+  return json({ credential: { publicKey: options } }, { status: response.status, headers: { "Set-Cookie": cookie } });
 };
 
 export default function SignUp() {
@@ -951,9 +922,7 @@ export default function SignUp() {
       return;
     }
 
-    const credentialWithAttestation = await create(
-      actionData.credential as CredentialCreationOptionsJSON
-    );
+    const credentialWithAttestation = await create(actionData.credential as CredentialCreationOptionsJSON);
     const formData = new FormData();
     formData.append("credential", JSON.stringify(credentialWithAttestation));
     submit(formData, {
@@ -974,10 +943,7 @@ export default function SignUp() {
             <div className="card-body">
               <h2 className="card-title">Sign Up</h2>
               <div className="form-control">
-                <label
-                  htmlFor="username"
-                  className="label label-text text-neutral-content"
-                >
+                <label htmlFor="username" className="label label-text text-neutral-content">
                   Username
                 </label>
                 <input
@@ -1001,7 +967,6 @@ export default function SignUp() {
     </div>
   );
 }
-
 ```
 
 ```ts:frontend/app/routes/_auth.tsx
@@ -1010,23 +975,16 @@ import { isAuthenticated } from "~/utils/auth.server";
 
 export const loader = async ({ request, context }: LoaderFunctionArgs) => {
   if (await isAuthenticated(request, context)) {
-    throw redirect("/profile", {
-      headers: { "Set-Cookie": request.headers.get("Cookie") || "" },
-    });
+    throw redirect("/profile");
   }
   return null;
 };
-
 ```
 
 ```ts:frontend/app/routes/_index.tsx
 import { Link, useLoaderData } from "@remix-run/react";
+import { json, type LoaderFunctionArgs, type MetaFunction } from "@remix-run/cloudflare";
 import { isAuthenticated } from "~/utils/auth.server";
-import {
-  json,
-  type LoaderFunctionArgs,
-  type MetaFunction,
-} from "@remix-run/cloudflare";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Let's try passkey" }];
@@ -1050,10 +1008,7 @@ export default function Index() {
               {authenticated ? (
                 <>
                   <div>
-                    <Link
-                      to={"/profile"}
-                      className="btn btn-primary normal-case"
-                    >
+                    <Link to={"/profile"} className="btn btn-primary normal-case">
                       Profile
                     </Link>
                   </div>
@@ -1061,18 +1016,12 @@ export default function Index() {
               ) : (
                 <>
                   <div>
-                    <Link
-                      to={"/sign-up"}
-                      className="btn btn-primary normal-case"
-                    >
+                    <Link to={"/sign-up"} className="btn btn-primary normal-case">
                       Sign up
                     </Link>
                   </div>
                   <div>
-                    <Link
-                      to={"/sign-in"}
-                      className="btn btn-secondary normal-case"
-                    >
+                    <Link to={"/sign-in"} className="btn btn-secondary normal-case">
                       Sign in
                     </Link>
                   </div>
@@ -1085,39 +1034,35 @@ export default function Index() {
     </div>
   );
 }
-
 ```
 
 ```ts:frontend/app/routes/profile.tsx
 import { Form, useLoaderData } from "@remix-run/react";
-import { json } from "@remix-run/cloudflare";
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import { json, type LoaderFunctionArgs, type MetaFunction } from "@remix-run/cloudflare";
 import { getApiUrl } from "~/utils/api.server";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Profile" }];
 };
 
+type Profile = {
+  username: string;
+};
+
 export const loader = async ({ request, context }: LoaderFunctionArgs) => {
   const apiUrl = getApiUrl(context);
-
   const response = await fetch(`${apiUrl}/profile`, {
     method: "GET",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json; charset=utf-8",
+      "Content-Type": "application/json",
       Cookie: request.headers.get("Cookie") || "",
     },
   });
 
-  const cookie = response.headers.get("Set-Cookie") || "";
-  if (!response.ok)
-    throw json(
-      {},
-      { status: response.status, headers: { "Set-Cookie": cookie } }
-    );
-  const profile = (await response.json()) as { username: string };
-  return json({ profile }, { status: 200, headers: { "Set-Cookie": cookie } });
+  if (!response.ok) throw json({}, { status: response.status });
+  const profile = (await response.json()) as Profile;
+  return json({ profile });
 };
 
 export default function Profile() {
@@ -1141,30 +1086,25 @@ export default function Profile() {
     </div>
   );
 }
-
 ```
 
 ```ts:frontend/app/routes/session.destroy.tsx
-import { redirect } from "@remix-run/cloudflare";
-import type { ActionFunctionArgs } from "@remix-run/cloudflare";
+import { redirect, type ActionFunctionArgs } from "@remix-run/cloudflare";
 import { getApiUrl } from "~/utils/api.server";
 
 export const action = async ({ context, request }: ActionFunctionArgs) => {
   const apiUrl = getApiUrl(context);
-
   const response = await fetch(`${apiUrl}/session`, {
     method: "DELETE",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json; charset=utf-8",
+      "Content-Type": "application/json",
       Cookie: request.headers.get("Cookie") || "",
     },
   });
-
   const cookie = response.headers.get("Set-Cookie") || "";
   return redirect("/", { headers: { "Set-Cookie": cookie } });
 };
-
 ```
 
 ```ts:frontend/app/utils/api.server.ts
@@ -1175,56 +1115,153 @@ export const getApiUrl = (context: AppLoadContext) => {
   const env = context.env as Env;
   return env.API_URL;
 };
+```
 
+```ts:auth.d.ts
+export type AuthUser = {
+  id: string;
+  username: string;
+};
 ```
 
 ```ts:frontend/app/utils/auth.server.ts
 import type { AppLoadContext } from "@remix-run/cloudflare";
 import { getApiUrl } from "./api.server";
+import type { AuthUser } from "./auth";
 
-type AuthUserType = {
-  id: string;
-  username: string;
-};
-
-export const authentication = async (
-  request: Request,
-  context: AppLoadContext
-) => {
+export const authentication = async (request: Request, context: AppLoadContext) => {
   const apiUrl = getApiUrl(context);
   const response = await fetch(`${apiUrl}/me`, {
     method: "GET",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json; charset=utf-8",
+      "Content-Type": "application/json",
       Cookie: request.headers.get("Cookie") || "",
     },
   });
 
-  const cookie = response.headers.get("Set-Cookie") || "";
-
-  if (response.ok) {
-    const user = (await response.json()) as AuthUserType;
-    return { user, cookie };
-  } else {
-    return { user: null, cookie };
+  if (!response.ok) {
+    return { user: null };
   }
+  const user = (await response.json()) as AuthUser;
+  return { user };
 };
 
-export const isAuthenticated = async (
-  request: Request,
-  context: AppLoadContext
-) => {
+export const isAuthenticated = async (request: Request, context: AppLoadContext) => {
   const apiUrl = getApiUrl(context);
   const response = await fetch(`${apiUrl}/me`, {
     method: "GET",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json; charset=utf-8",
+      "Content-Type": "application/json",
       Cookie: request.headers.get("Cookie") || "",
     },
   });
   return response.ok;
 };
-
 ```
+
+:::details 最終的なファイルツリー。
+
+```sh
+ls -T
+./
+├── backend/
+│  ├── .gitattributes
+│  ├── .gitignore
+│  ├── .ruby-version
+│  ├── app/
+│  │  ├── controllers/
+│  │  │  ├── application_controller.rb
+│  │  │  ├── mes_controller.rb
+│  │  │  ├── profiles_controller.rb
+│  │  │  └── sessions_controller.rb
+│  │  └── models/
+│  │     ├── application_record.rb
+│  │     ├── user.rb
+│  │     └── webauthn_credential.rb
+│  ├── bin/
+│  │  ├── bundle*
+│  │  ├── rails*
+│  │  ├── rake*
+│  │  └── setup*
+│  ├── config/
+│  │  ├── application.rb
+│  │  ├── boot.rb
+│  │  ├── credentials.yml.enc
+│  │  ├── database.yml
+│  │  ├── environment.rb
+│  │  ├── environments/
+│  │  │  ├── development.rb
+│  │  │  ├── production.rb
+│  │  │  └── test.rb
+│  │  ├── initializers/
+│  │  │  ├── cors.rb
+│  │  │  ├── filter_parameter_logging.rb
+│  │  │  ├── inflections.rb
+│  │  │  └── webauthn.rb
+│  │  ├── locales/
+│  │  │  └── en.yml
+│  │  ├── master.key
+│  │  ├── puma.rb
+│  │  └── routes.rb
+│  ├── config.ru
+│  ├── db/
+│  │  ├── migrate/
+│  │  │  ├── 20231125041633_create_users.rb
+│  │  │  └── 20231125044030_create_webauthn_credentials.rb
+│  │  ├── schema.rb
+│  │  └── seeds.rb
+│  ├── Gemfile
+│  ├── Gemfile.lock
+│  ├── lib/
+│  ├── log/
+│  ├── public/
+│  │  └── robots.txt
+│  ├── Rakefile
+│  ├── README.md
+│  ├── storage/
+│  ├── tmp/
+│  └── vendor/
+└── frontend/
+   ├── .dev.vars
+   ├── .eslintrc.cjs
+   ├── .example.dev.vars
+   ├── .gitignore
+   ├── .node-version
+   ├── app/
+   │  ├── compornents/
+   │  │  └── Header.tsx
+   │  ├── entry.client.tsx
+   │  ├── entry.server.tsx
+   │  ├── global.d.ts
+   │  ├── root.tsx
+   │  ├── routes/
+   │  │  ├── _auth.sign-in.passkey.tsx
+   │  │  ├── _auth.sign-in.tsx
+   │  │  ├── _auth.sign-up.passkey.tsx
+   │  │  ├── _auth.sign-up.tsx
+   │  │  ├── _auth.tsx
+   │  │  ├── _index.tsx
+   │  │  ├── profile.tsx
+   │  │  └── session.destroy.tsx
+   │  ├── tailwind.css
+   │  └── utils/
+   │     ├── api.server.ts
+   │     └── auth.server.ts
+   ├── functions/
+   ├── package-lock.json
+   ├── package.json
+   ├── public/
+   │  ├── _headers
+   │  ├── _routes.json
+   │  └── favicon.ico
+   ├── README.md
+   ├── remix.config.js
+   ├── remix.env.d.ts
+   ├── server.ts
+   ├── tailwind.config.ts
+   └── tsconfig.json
+```
+
+:::
