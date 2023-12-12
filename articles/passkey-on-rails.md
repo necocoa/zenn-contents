@@ -1328,7 +1328,21 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 };
 ```
 
-Sigin in 画面です。
+Sign in 画面です。
+読み込み時にサーバ側から Passkeys の情報を取得します。
+
+```ts
+const onSubmit: FormEventHandler = async (event) => {
+  event.preventDefault()
+  const credentialWithAssertion = await get(credential as CredentialRequestOptionsJSON)
+  const formData = new FormData()
+  formData.append('credential', JSON.stringify(credentialWithAssertion))
+  submit(formData, { action: '/sign-in/passkey', method: 'post' })
+}
+```
+
+Sign in ボタンを押したタイミングで `get(credential)` を実行します。ブラウザ上で Passkeys(認証器) が表示されるので認証します。
+認証した情報をサーバ側に送ったらログイン完了となります。
 
 ```ts:frontend/app/routes/_auth.sign-in.tsx
 import type { FormEventHandler } from "react";
