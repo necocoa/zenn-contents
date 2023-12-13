@@ -118,15 +118,15 @@ https://shopify.github.io/ruby-lsp/RubyLsp/Requests/WorkspaceSymbol.html
 
 ワークスペース内のシンボルを検索できる機能は便利そうで使ってみようと思いました。
 
+ただ、メソッド呼び出し等まだ足りてない機能は多く、solargraph を併用するのが無難かなと思いました。Class, Module の定義ジャンプは精度が高い気はします。
+
+https://shopify.github.io/ruby-lsp/RubyLsp/Requests/Definition.html
+
 ### 置き換えられた Extention
 
 https://marketplace.visualstudio.com/items?itemName=rebornix.Ruby
 https://marketplace.visualstudio.com/items?itemName=misogi.ruby-rubocop
 https://marketplace.visualstudio.com/items?itemName=kaiwood.endwise
-
-solargraph が消せるかは検証中。Class, Module の定義ジャンプは精度が高い気はします。メソッド等は飛べません。
-
-https://shopify.github.io/ruby-lsp/RubyLsp/Requests/Definition.html
 
 #### 余談
 
