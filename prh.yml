@@ -8,6 +8,8 @@ imports:
       - expected: パス
       - expected: web
       - expected: CloudFlare
+      - expected: 初めて
+      - expected: 始め
 
   - path: node_modules/prh/prh-rules/media/techbooster.yml
     disableImports: true
