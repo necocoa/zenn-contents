@@ -8,7 +8,7 @@
 ### プレビューモード
 
 ```sh
-bun preview
+bunx zenn preview
 ```
 
 👀 Preview on http://localhost:8000
@@ -16,13 +16,7 @@ bun preview
 ### 記事の作成
 
 ```sh
-bun article
-```
-
-記事の URL の一部となる slug を指定して作成できます。
-
-```sh
-bun article:slug article-slug
+bunx zenn new:article
 ```
 
 ## bun
