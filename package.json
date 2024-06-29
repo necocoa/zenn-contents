@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "husky",
     "format": "prettier --write",
     "format:check": "prettier --check .",
     "format:all": "prettier --write .",
@@ -9,8 +9,8 @@
     "textlint:all": "textlint --fix ."
   },
   "devDependencies": {
-    "husky": "^8.0.3",
-    "lint-staged": "^14.0.1",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
     "prettier": "^3.3.2",
     "textlint": "^13.4.1",
     "textlint-filter-rule-comments": "^1.2.2",
