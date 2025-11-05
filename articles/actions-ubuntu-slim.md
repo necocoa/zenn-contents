@@ -52,14 +52,20 @@ claude code などに「軽い Actions だけランナーを `ubuntu-slim` に�
 
 ### プリインストールツール
 
-`ubuntu-latest` にはプリインストールされているが `ubuntu-slim` には含まれていない場合があります。
+`ubuntu-latest` にはプリインストールされているが `ubuntu-slim` には含まれていないツールがあります。
 
-- Docker Compose
+例:
+
 - 各種言語のバージョン管理ツール（nvm, rbenv 等）
 - ビルドツール（make 等）
 - データベースクライアント
 
-必要に応じてインストールがですがその時間分、実行時間もかかります。`ubuntu-latest` を使う方がタイパ・コスパはよい場合も大いにありそうです。
+現時点での `ubuntu-latest` に入っているツールはこちらです。
+https://github.com/actions/runner-images/blob/releases/ubuntu24/20251102/images/ubuntu/Ubuntu2404-Readme.md
+
+`ubuntu-slim` に入っているツールは探してみたのですが見つかりませんでした。
+
+必要に応じてインストールで対応できますが実行時間も余計にかかります。`ubuntu-latest` を使う方がタイパ・コスパはよい場合も大いにありそうです。
 
 ### 実行環境
 
