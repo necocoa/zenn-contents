@@ -67,6 +67,16 @@ https://github.com/actions/runner-images/blob/releases/ubuntu24/20251102/images/
 
 必要に応じてインストールで対応できますが実行時間も余計にかかります。`ubuntu-latest` を使う方がタイパ・コスパはよい場合も大いにありそうです。
 
+### 環境変数
+
+アクション上で走らせた Ruby ERB が `US-ASCII` として解釈され、日本語を読み込んだ際にエラーが発生しました。
+`LANG` `LC_ALL` が設定されていないようですので、環境変数を明示的に指定する必要があります。
+
+```diff yaml
++ LANG: C.UTF-8
++ LC_ALL: C.UTF-8
+```
+
 ### 実行環境
 
 通常の `ubuntu-latest` などは専用の VM インスタンスが立ち上がりますが `ubuntu-slim` ではコンテナ内で実行されます。
