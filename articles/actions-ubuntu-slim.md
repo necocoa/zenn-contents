@@ -9,7 +9,9 @@ publication_name: 'my_vision'
 
 ## はじめに
 
-2025 年 10 月 28 日に GitHub Actions から新ランナー「Ubuntu-slim」が発表しました。
+<!-- textlint-disable prh -->
+
+2025 年 10 月 28 日に GitHub Actions から新ランナー「ubuntu-slim」が発表しました。
 
 https://github.blog/changelog/2025-10-28-1-vcpu-linux-runner-now-available-in-github-actions-in-public-preview/
 
@@ -20,9 +22,9 @@ https://github.blog/changelog/2025-10-28-1-vcpu-linux-runner-now-available-in-gi
 
 |       Runner        |  vCPU  | コスト(分) |  RAM  | 実行時間制限 | 　実行環境 |
 | :-----------------: | :----: | :--------: | :---: | ------------ | ---------- |
-|     Ubuntu-slim     | 1 vCPU |   $0.002   | 5 GB  | 　15分       | 　コンテナ |
-|    Ubuntu-latest    | 2 vCPU |   $0.008   | 7 GB  | 6時間        | 　VM       |
-| Ubuntu-latest-4core | 4 vCPU |   $0.016   | 16 GB | 6時間        | 　VM       |
+|     ubuntu-slim     | 1 vCPU |   $0.002   | 5 GB  | 　15分       | 　コンテナ |
+|    ubuntu-latest    | 2 vCPU |   $0.008   | 7 GB  | 6時間        | 　VM       |
+| ubuntu-latest-4core | 4 vCPU |   $0.016   | 16 GB | 6時間        | 　VM       |
 
 ※ 表はプライベートリポジトリの価格です。
 
@@ -61,7 +63,7 @@ claude code などに「軽い Actions だけランナーを `ubuntu-slim` に�
 - データベースクライアント
 
 現時点での `ubuntu-latest` に入っているツールはこちらです。
-https://github.com/actions/runner-images/blob/releases/ubuntu24/20251102/images/ubuntu/Ubuntu2404-Readme.md
+https://github.com/actions/runner-images/blob/releases/ubuntu24/20251102/images/ubuntu/ubuntu2404-Readme.md
 
 `ubuntu-slim` に入っているツールは探してみたのですが見つかりませんでした。
 
