@@ -8,7 +8,7 @@
 ### プレビューモード
 
 ```sh
-bunx zenn preview
+bun dev
 ```
 
 👀 Preview on http://localhost:8000
@@ -16,7 +16,7 @@ bunx zenn preview
 ### 記事の作成
 
 ```sh
-bunx zenn new:article
+bun new
 ```
 
 ## bun
