@@ -2,8 +2,8 @@
 title: 'GitHub Actionsの新ランナー ubuntu-slim でコスト削減する'
 emoji: '🐳'
 type: 'tech'
-topics: ['githubactions']
-published: false
+topics: ['githubactions', 'github']
+published: true
 publication_name: 'my_vision'
 ---
 
