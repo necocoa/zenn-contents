@@ -11,7 +11,7 @@ publication_name: 'my_vision'
 
 <!-- textlint-disable prh -->
 
-2025 年 10 月 28 日に GitHub Actions から新ランナー「ubuntu-slim」が発表しました。
+2025 年 10 月 28 日に GitHub Actions から新ランナー「ubuntu-slim」が発表されました。
 
 https://github.blog/changelog/2025-10-28-1-vcpu-linux-runner-now-available-in-github-actions-in-public-preview/
 
