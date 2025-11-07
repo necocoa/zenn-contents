@@ -13,13 +13,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-      - run: bun install
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install
 
       - name: Run format check
-        run: bun format:check
+        run: pnpm format:check
 
       - name: Run textlint
         if: always()

@@ -8,7 +8,7 @@
 ### プレビューモード
 
 ```sh
-bun dev
+pnpm dev
 ```
 
 👀 Preview on http://localhost:8000
@@ -16,13 +16,12 @@ bun dev
 ### 記事の作成
 
 ```sh
-bun new
+pnpm new
 ```
 
-## bun
-
-https://bun.sh/
+## pnpm
 
 ```sh
-curl -fsSL https://bun.sh/install | bash
+corepack enable
+pnpm install
 ```
