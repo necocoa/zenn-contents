@@ -12,14 +12,16 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
         with:
-          bun-version: latest
-      - run: bun install
+          node-version: 24
+          cache: "pnpm"
+      - run: pnpm install
 
       - name: Run format check
-        run: bun format:check
+        run: pnpm format:check
 
       - name: Run textlint
         if: always()

@@ -1,4 +1,5 @@
 {
+  "packageManager": "pnpm@10.20.0",
   "scripts": {
     "dev": "zenn preview",
     "new": "zenn new:article",
