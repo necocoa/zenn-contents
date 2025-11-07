@@ -13,15 +13,15 @@
   },
   "devDependencies": {
     "husky": "^9.1.7",
-    "lint-staged": "^15.5.2",
+    "lint-staged": "^16.2.6",
     "prettier": "^3.6.2",
     "prh": "^5.4.4",
-    "textlint": "^14.8.4",
+    "textlint": "^15.2.3",
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-rule-preset-ja-spacing": "^2.4.3",
-    "textlint-rule-preset-ja-technical-writing": "^10.0.2",
+    "textlint-rule-preset-ja-technical-writing": "^12.0.2",
     "textlint-rule-prh": "^6.1.0",
-    "zenn-cli": "^0.2.9"
+    "zenn-cli": "^0.2.10"
   },
   "lint-staged": {
     "./**/*.md": [
