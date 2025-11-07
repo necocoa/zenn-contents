@@ -57,7 +57,7 @@ create-remix を使ってセットアップしていきます。
 
 https://remix.run/docs/en/main/other-api/create-remix
 
-Remix v2 から実行時に引数でテンプレートを指定する必要があります。
+Remix v2 から実行時に引数でテンプレートを指定します。
 今回は公式で提供されている Cloudflare Pages のテンプレートを利用します。
 
 https://remix.run/docs/en/main/guides/templates

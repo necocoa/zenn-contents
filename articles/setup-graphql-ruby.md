@@ -95,7 +95,7 @@ GraphQL API の動作確認のため GraphiQL を入れます。
 1. GraphiQL.app
 2. gem graphiql-rails
 
-Gem 経由だと Sprockets で IDE が実行されますが、API モードですと Sprockets が有効になっていないため有効にする必要があります。
+Gem 経由だと Sprockets で IDE が実行されますが、API モードですと Sprockets が有効になっていないため有効にします。
 ※API モードではない場合 graphiql-rails を入れた状態で `bin/rails g graphql:install` を実行すると勝手にセットアップしてくれます。
 
 IDE のために Sprockets を有効にするのは微妙な気がするため、自分はアプリケーションをインストールする方法を選びました。
@@ -404,7 +404,7 @@ GraphiQL で同様の Query を使って取得できるか確認してみてく�
 ### Create Post Mutation
 
 続いては Post を作成する Mutation を作ります。
-`g graphql:mutation` を使って作成すると `mutation_type.rb` への追加と `create_post.rb` の作成が行われます。
+`g graphql:mutation` を使って作成すると `mutation_type.rb` への追加と `create_post.rb` の作成がされます。
 
 ```
 $ bin/rails g graphql:mutation create_post

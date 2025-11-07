@@ -35,6 +35,8 @@
         "after": true
       }
     },
+    "@textlint-ja/preset-ai-writing": true,
+    "@textlint-ja/no-synonyms": true,
     "prh": {
       "rulePaths": [
         "prh.yml"
