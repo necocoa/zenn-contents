@@ -1,5 +1,5 @@
 ---
-title: 'GitHub Actionsの新ランナー ubuntu-slim でコスト削減する'
+title: 'GitHub Actions の新ランナー ubuntu-slim でコスト削減する'
 emoji: '🐳'
 type: 'tech'
 topics: ['githubactions', 'github']
