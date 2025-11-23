@@ -1,0 +1,2 @@
+# Ignore specific directories and files
+.claude/**
