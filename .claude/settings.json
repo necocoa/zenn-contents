@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$file_path\" =~ ^(articles|books)/.+\\.md$ ]] && [[ ! \"$file_path\" =~ ^\\.claude/ ]]; then pnpm run lint \"$file_path\" || true; fi",
+            "statusMessage": "Running textlint..."
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$file_path\" =~ ^(articles|books)/.+\\.md$ ]] && [[ ! \"$file_path\" =~ ^\\.claude/ ]]; then pnpm run lint \"$file_path\" || true; fi",
+            "statusMessage": "Running textlint..."
+          }
+        ]
+      }
+    ]
+  }
+}
