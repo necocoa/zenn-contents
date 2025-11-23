@@ -28,7 +28,4 @@ jobs:
 
       - name: Run textlint
         if: always()
-        uses: tsuyoshicho/action-textlint@v3
-        with:
-          github_token: ${{ secrets.github_token }}
-          fail_on_error: true
+        run: pnpm lint articles/**/*.md books/**/*.md
