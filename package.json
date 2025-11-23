@@ -1,5 +1,4 @@
 {
-  "packageManager": "pnpm@10.20.0",
   "scripts": {
     "dev": "zenn preview",
     "new": "zenn new:article",
@@ -7,9 +6,9 @@
     "format": "prettier --write",
     "format:check": "prettier --check .",
     "format:all": "prettier --write .",
-    "textlint": "textlint",
-    "textlint:fix": "textlint --fix",
-    "textlint:all": "textlint --fix ."
+    "lint": "textlint",
+    "lint:fix": "textlint --fix",
+    "lint:all": "textlint --fix ."
   },
   "devDependencies": {
     "@textlint-ja/textlint-rule-no-synonyms": "^1.3.0",
@@ -27,11 +26,7 @@
     "zenn-cli": "^0.2.10"
   },
   "lint-staged": {
-    "./**/*.md": [
-      "prettier --write",
-      "textlint --fix"
-    ],
-    "./**/*.{json,yaml,yml}": "prettier --write"
+    "./**/*.{json,yaml,yml,md}": "prettier --write"
   },
   "private": true
 }

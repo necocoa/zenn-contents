@@ -1,1 +1,2 @@
-npx lint-staged
+eval "$(mise activate zsh --shims)"
+pnpm lint-staged

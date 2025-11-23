@@ -19,9 +19,24 @@ pnpm dev
 pnpm new
 ```
 
-## pnpm
+## Setup
+
+### mise
 
 ```sh
-corepack enable
-pnpm install
+brew install mise
+mise trust
+mise install
+```
+
+### pnpm
+
+```sh
+pnpm i
+```
+
+### husky
+
+```sh
+pnpm prepare
 ```
