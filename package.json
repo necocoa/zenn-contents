@@ -1,5 +1,4 @@
 {
-  "packageManager": "pnpm@10.20.0",
   "scripts": {
     "dev": "zenn preview",
     "new": "zenn new:article",
@@ -7,19 +6,19 @@
     "format": "prettier --write",
     "format:check": "prettier --check .",
     "format:all": "prettier --write .",
-    "textlint": "textlint",
-    "textlint:fix": "textlint --fix",
-    "textlint:all": "textlint --fix ."
+    "lint": "textlint",
+    "lint:fix": "textlint --fix",
+    "lint:all": "textlint --fix ."
   },
   "devDependencies": {
     "@textlint-ja/textlint-rule-no-synonyms": "^1.3.0",
     "@textlint-ja/textlint-rule-preset-ai-writing": "^1.6.1",
     "husky": "^9.1.7",
-    "lint-staged": "^16.2.6",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.6.2",
     "prh": "^5.4.4",
-    "sudachi-synonyms-dictionary": "^15.0.0",
-    "textlint": "^15.2.3",
+    "sudachi-synonyms-dictionary": "^16.0.0",
+    "textlint": "^15.4.0",
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-rule-preset-ja-spacing": "^2.4.3",
     "textlint-rule-preset-ja-technical-writing": "^12.0.2",
@@ -27,11 +26,7 @@
     "zenn-cli": "^0.2.10"
   },
   "lint-staged": {
-    "./**/*.md": [
-      "prettier --write",
-      "textlint --fix"
-    ],
-    "./**/*.{json,yaml,yml}": "prettier --write"
+    "./**/*.{json,yaml,yml,md}": "prettier --write"
   },
   "private": true
 }
