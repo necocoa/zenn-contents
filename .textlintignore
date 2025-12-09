@@ -1,2 +1,3 @@
 # Ignore specific directories and files
 .claude/**
+CLAUDE.md
