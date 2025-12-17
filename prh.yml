@@ -10,6 +10,8 @@ imports:
       - expected: CloudFlare
       - expected: 初めて
       - expected: 始め
+      - expected: テクノロジ
+      - expected: しくみ
 
   - path: node_modules/prh/prh-rules/media/techbooster.yml
     disableImports: true
