@@ -153,8 +153,8 @@ API として InVision から呼び出したり、ロングタイムになりが
 
 ### 監視・運用
 
-- Bugsnag: エラートラッキング
-- CloudWatch: 監視
+- エラートラッキング: Bugsnag
+- 監視: CloudWatch
 
 ### 開発ツール
 
