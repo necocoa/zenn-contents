@@ -17,7 +17,10 @@ https://corporate.my-vision.co.jp/
 
 とあるように、**テクノロジーと仕組みを駆使して、支援の質を最大化すること** を目指しています。
 
-そのために、取引企業・求人・候補者の選考状況など、転職支援に関わるすべてを管理するアプリケーション「**InVision**」を開発しています。
+![value](https://storage.googleapis.com/zenn-user-upload/701ddcbc4ada-20251224.png)
+_会社紹介資料から_
+
+そのために、取引企業・求人・候補者の選考状況など、転職支援に関わるすべてを管理する社内アプリケーション「**InVision**」を開発しています。
 
 今回は InVision で使っているシステム構成と活用している技術、開発の流れを紹介します！
 
@@ -93,6 +96,7 @@ https://zenn.dev/my_vision/articles/f3dcb3e5f04b21
 - FW: Next.js / Astro
 - インフラ: Vercel
 - GraphQL Client: Apollo / graphql-codegen
+- ユニットテスト: vitest
 - E2E: Playwright
 
 ### 開発環境
