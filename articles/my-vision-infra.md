@@ -1,8 +1,8 @@
 ---
-title: 'MyVision を支えるシステムと技術'
+title: 'MyVision を支えるシステム構成と AI Agents'
 emoji: '🚀'
 type: 'tech'
-topics: ['rails', 'nextjs', 'aws', 'graphql', 'ai']
+topics: ['rails', 'nextjs', 'fastapi', 'prefect', 'ai']
 published: false
 publication_name: 'my_vision'
 ---
@@ -23,7 +23,7 @@ https://corporate.my-vision.co.jp/
 
 ## インフラアーキテクチャ
 
-まずはインフラと全体像です！
+まずはインフラと各アプリケーションの全体像です！
 
 ![architecture diagram](https://storage.googleapis.com/zenn-user-upload/844669e75b32-20251217.png)
 
