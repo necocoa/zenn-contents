@@ -1,5 +1,5 @@
 ---
-title: 'MyVision を支えるシステムと技術構成'
+title: 'MyVision を支えるシステムと技術'
 emoji: '🚀'
 type: 'tech'
 topics: ['rails', 'nextjs', 'aws', 'graphql', 'ai']
