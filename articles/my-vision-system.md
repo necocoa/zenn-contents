@@ -80,6 +80,8 @@ https://zenn.dev/my_vision/articles/37ea494a629590
 
 staging / local どちらも、そのデータを元に開発を進めることができるため、UX の確認やデバッグが非常にラクです。
 
+また、Ruby・Rails・Gem などほぼ最新になっており、アップデート業も進んでいます。
+
 ## フロントエンド
 
 ![frontend](https://storage.googleapis.com/zenn-user-upload/58d0242c116d-20251217.png)
@@ -112,6 +114,8 @@ https://turborepo.com/
 
 https://zenn.dev/my_vision/articles/8713fc4fde965c
 
+Next.js・React は来月に srkw さんが最新まで上げてくれます！
+
 ## AI バックエンド
 
 ![ai backend](https://storage.googleapis.com/zenn-user-upload/ed3a00942ff2-20251223.png)
@@ -138,6 +142,7 @@ API として InVision から呼び出したり、ロングタイムになりが
 - Fluentd (ログ) → BigQuery
 
 のような流れで BigQuery にデータを集約しています。KPI モニタリングやマーケ分析として活用しています。
+サーバのログもすべて BigQuery に送っているので、過去のログも含めて常に検索可能になっています。
 
 ## 開発・運用環境
 
