@@ -27,5 +27,6 @@
   "engines": {
     "pnpm": "^11"
   },
+  "packageManager": "pnpm@11.0.8",
   "private": true
 }
