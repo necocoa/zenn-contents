@@ -345,7 +345,7 @@ resolvers ディレクトリを作成します。
 $ mkdir app/graphql/resolvers
 ```
 
-他の Base に合わせて BaseResolver を作成します。
+ほかの Base に合わせて BaseResolver を作成します。
 
 ```ruby:app/graphql/resolvers/base_resolver.rb
 module Resolvers

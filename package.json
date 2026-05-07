@@ -14,21 +14,24 @@
   },
   "devDependencies": {
     "@textlint-ja/textlint-rule-no-synonyms": "^1.3.0",
-    "@textlint-ja/textlint-rule-preset-ai-writing": "^1.6.1",
+    "@textlint-ja/textlint-rule-preset-ai-writing": "^1.6.3",
     "husky": "^9.1.7",
-    "lint-staged": "^16.2.7",
-    "prettier": "^3.7.4",
-    "prh": "^5.4.4",
-    "sudachi-synonyms-dictionary": "^16.0.0",
-    "textlint": "^15.5.0",
-    "textlint-filter-rule-comments": "^1.2.2",
+    "lint-staged": "^17.0.2",
+    "prettier": "^3.8.3",
+    "prh": "^6.0.6",
+    "sudachi-synonyms-dictionary": "^18.0.0",
+    "textlint": "^15.6.0",
+    "textlint-filter-rule-comments": "^1.3.0",
     "textlint-rule-preset-ja-spacing": "^2.4.3",
     "textlint-rule-preset-ja-technical-writing": "^12.0.2",
     "textlint-rule-prh": "^6.1.0",
-    "zenn-cli": "^0.2.11"
+    "zenn-cli": "^0.4.7"
   },
   "lint-staged": {
     "./**/*.{json,yaml,yml,md}": "prettier --write"
+  },
+  "pnpm": {
+    "minimumReleaseAge": 10080
   },
   "private": true
 }

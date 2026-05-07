@@ -25,7 +25,7 @@ https://shopify.engineering/improving-the-developer-experience-with-ruby-lsp
 - rubocop: Formatter & Linter
 
 私はこれらのライブラリを主に使っています。
-期待していることは、リポジトリ毎に異なる Ruby バージョン対応、rubocop.yml やハイライト、rubocop のエラー表示、auto format に対応していることです。
+期待していることは、リポジトリごとに異なる Ruby バージョン対応、rubocop.yml やハイライト、rubocop のエラー表示、auto format に対応していることです。
 
 また ruby-lsp は Ruby 2.7 以上が必要です。
 
