@@ -1,0 +1,7 @@
+pre-commit:
+  parallel: true
+  commands:
+    format:
+      glob: "*.{json,yaml,yml,md}"
+      run: pnpm oxfmt --write {staged_files}
+      stage_fixed: true
