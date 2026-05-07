@@ -35,7 +35,7 @@ mise install
 pnpm i
 ```
 
-### husky
+### lefthook
 
 ```sh
 pnpm prepare
