@@ -23,15 +23,19 @@ https://github.blog/changelog/2025-10-28-1-vcpu-linux-runner-now-available-in-gi
 |       Runner        |  vCPU  | コスト(分) |  RAM  | 実行時間制限 | 　実行環境 |
 | :-----------------: | :----: | :--------: | :---: | ------------ | ---------- |
 |     ubuntu-slim     | 1 vCPU |   $0.002   | 5 GB  | 　15分       | 　コンテナ |
-|    ubuntu-latest    | 2 vCPU |   $0.008   | 7 GB  | 6時間        | 　VM       |
-| ubuntu-latest-4core | 4 vCPU |   $0.016   | 16 GB | 6時間        | 　VM       |
+|    ubuntu-latest    | 2 vCPU |   $0.006   | 7 GB  | 6時間        | 　VM       |
+| ubuntu-latest-4core | 4 vCPU |   $0.012   | 16 GB | 6時間        | 　VM       |
 
-※ 表はプライベートリポジトリの価格です。
-
-通常の `ubuntu-latest` に比べて 1/4 のコストになっています。
+通常の `ubuntu-latest` に比べて 1/3 のコストになっています。
 
 Actions の課金体系は分単位での課金となります。実行時間が 1 秒でも切り上げて 1 分の課金がされます。
-数秒で終わるが実行回数が多いアクションは、実行時間は対して変わらない割にはコストは 1/4 となるためチリツモになります。
+数秒で終わるが実行回数が多いアクションは、実行時間は対して変わらない割にはコストは 1/3 となるためチリツモになります。
+
+https://docs.github.com/ja/billing/reference/actions-runner-pricing
+
+:::message
+2026 年 1 月 1 日に価格改定があり、$0.008 → $0.006、$0.016 → $0.012 と値下げされています。
+:::
 
 ## 切り替え方法
 
