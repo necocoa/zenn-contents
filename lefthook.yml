@@ -3,5 +3,5 @@ pre-commit:
   commands:
     format:
       glob: "*.{json,yaml,yml,md}"
-      run: pnpm oxfmt --write {staged_files}
+      run: eval "$(mise activate bash --shims)" && pnpm oxfmt --write {staged_files}
       stage_fixed: true
