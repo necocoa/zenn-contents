@@ -24,9 +24,6 @@
     "textlint-rule-prh": "6.1.0",
     "zenn-cli": "0.4.7"
   },
-  "engines": {
-    "pnpm": "^11"
-  },
   "packageManager": "pnpm@11.0.8",
   "private": true
 }
