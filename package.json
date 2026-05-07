@@ -24,8 +24,5 @@
     "textlint-rule-prh": "^6.1.0",
     "zenn-cli": "^0.4.7"
   },
-  "pnpm": {
-    "minimumReleaseAge": 10080
-  },
   "private": true
 }
