@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "zenn preview",
     "new": "zenn new:article",
-    "prepare": "husky",
+    "prepare": "lefthook install",
     "format:fix": "oxfmt --write",
     "format:check": "oxfmt --check",
     "lint": "textlint --ignore-path .textlintignore",
@@ -13,8 +13,7 @@
   "devDependencies": {
     "@textlint-ja/textlint-rule-no-synonyms": "^1.3.0",
     "@textlint-ja/textlint-rule-preset-ai-writing": "^1.6.3",
-    "husky": "^9.1.7",
-    "lint-staged": "^17.0.2",
+    "lefthook": "^2.1.6",
     "oxfmt": "^0.47.0",
     "prh": "^6.0.6",
     "sudachi-synonyms-dictionary": "^18.0.0",
@@ -24,9 +23,6 @@
     "textlint-rule-preset-ja-technical-writing": "^12.0.2",
     "textlint-rule-prh": "^6.1.0",
     "zenn-cli": "^0.4.7"
-  },
-  "lint-staged": {
-    "./**/*.{json,yaml,yml,md}": "oxfmt --write"
   },
   "pnpm": {
     "minimumReleaseAge": 10080
