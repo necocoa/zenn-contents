@@ -2,7 +2,7 @@
 title: 'MyVision を支えるシステム構成と AI Agents'
 emoji: '🚀'
 type: 'tech'
-topics: ['rails', 'nextjs', 'fastapi', 'prefect', 'ai']
+topics: ['rails', 'nextjs', 'fastapi', 'prefect', 'hono', 'ai']
 published: true
 publication_name: 'my_vision'
 ---
@@ -90,7 +90,7 @@ staging / local どちらも、そのデータを元に開発を進めること�
 
 ![frontend](https://storage.googleapis.com/zenn-user-upload/58d0242c116d-20251217.png)
 
-主に Next.js を使っています。InVision のほかに、各ブランドのメディアサイトも管理しています。
+主に Next.js を使っています。InVision のほかに、各ブランドのメディアサイトや企業向け・求職者向け管理画面も開発しています。
 
 CSR とメディアの一部で ISR を使っています。
 ユーザー体験・表示速度が重要な応募フォームには Astro を使い、バンドルサイズなども最適化しています。
@@ -149,7 +149,6 @@ API として InVision から呼び出したり、ロングタイムになりが
 - AI: Azure / OpenAI (ChatGPT)
 - サーバ: ECS / Fargate
 - DB: RDS / PostgreSQL
-  - Prefect の状態管理
 
 ## AI Chat API
 
@@ -159,23 +158,23 @@ AI チャットアシスタントとして、担当候補者や求人のデー�
 
 チャット特有のストリーミング処理などは Vercel AI SDK を使い、Hono のバックエンド側では Tool Calling や添付ファイルの読み取りなどを行っています。
 
-必要な情報は Tool Calling を通して rails のバックエンドから HTTP 経由で取得する形になっており、チャットマイクロサービスとして運用しています。
-
-https://ai-sdk.dev/
+必要な情報は Tool Calling を通して rails のバックエンドから取得する形になっており、チャットマイクロサービスとして運用しています。
 
 ### 主な技術
 
 - FW: Hono
 - Chat: Vercel AI SDK
-- AI: Azure / OpenAI (ChatGPT)
+- AI: OpenAI (ChatGPT)
 - サーバ: ECS / Fargate
 - DB: Aurora / PostgreSQL
+
+https://ai-sdk.dev/
 
 ## データ分析基盤
 
 ![data platform](https://static.zenn.studio/user-upload/9da4b6b3577b-20260812.png)
 
-- Aurora → RDS Snapshot → S3(Parquet) → Storage Transfer Service → GCS(BigQuery) → dbt → BigQuery
+- Aurora → RDS Snapshot → S3(Parquet) → Storage Transfer Service → GCS(Parquet) → BigQuery(raw) → dbt → BigQuery(分析用テーブル)
 - Fluentd (ログ) → BigQuery
 
 のような流れで BigQuery にデータを集約しています。KPI モニタリングやマーケ分析として活用しています。
@@ -213,7 +212,11 @@ https://ai-sdk.dev/
 全エンジニアが Claude Code をゴリゴリ使って開発しています。
 Notion 上で PRD / DesignDocs を管理しているため、Notion / Figma の MCP を使って連携し、要件定義から実装まで Claude Code を有効活用して開発を進めています。
 
-また、現在はバックエンド・フロントエンドともにリポジトリが別ですが、モノレポにすることで両方の変更を一括で行えるようにモノレポへ移行中です。
+また、現在はバックエンド・フロントエンドすべてがモノレポになっており、Claude Code での開発が捗っています！
+
+https://zenn.dev/my_vision/articles/d8f7258ebd9eb4
+
+https://zenn.dev/my_vision/articles/f49b33b4036078
 
 ## まとめ
 
