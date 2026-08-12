@@ -2,7 +2,7 @@
 title: 'MyVision を支えるシステム構成と AI Agents'
 emoji: '🚀'
 type: 'tech'
-topics: ['rails', 'nextjs', 'fastapi', 'prefect', 'hono', 'ai']
+topics: ['rails', 'nextjs', 'fastapi', 'prefect', 'hono']
 published: true
 publication_name: 'my_vision'
 ---
