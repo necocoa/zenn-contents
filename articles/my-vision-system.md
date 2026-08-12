@@ -2,7 +2,7 @@
 title: 'MyVision を支えるシステム構成と AI Agents'
 emoji: '🚀'
 type: 'tech'
-topics: ['rails', 'nextjs', 'fastapi', 'prefect', 'ai']
+topics: ['rails', 'nextjs', 'fastapi', 'prefect', 'hono']
 published: true
 publication_name: 'my_vision'
 ---
@@ -28,14 +28,18 @@ _会社紹介資料から_
 
 まずはインフラと各アプリケーションの全体像です！
 
-![architecture diagram](https://storage.googleapis.com/zenn-user-upload/844669e75b32-20251217.png)
+![architecture diagram](https://static.zenn.studio/user-upload/3203e814cf4d-20260812.png)
 
 ざっくりすると、このような構成になっています。
 
+<!-- textlint-disable prh -->
+
 - バックエンド: Ruby on Rails
 - フロントエンド: Next.js / Astro
+- モバイルアプリ: React Native / Expo
 - AI バックエンド: FastAPI / Prefect
-- インフラ: AWS ECS / RDS、一部 GCP
+- インフラ: AWS ECS / Aurora、一部 GCP
+<!-- textlint-enabled -->
 
 ファーストコミットが 2023 年 3 月と新しめのアプリケーションになっています。
 
@@ -43,7 +47,7 @@ _会社紹介資料から_
 
 ## バックエンド
 
-![backend](https://storage.googleapis.com/zenn-user-upload/51419290ed01-20251223.png)
+![backend](https://static.zenn.studio/user-upload/8d787a29dd94-20260812.png)
 
 Ruby on Rails を使っており、メインのアプリケーションバックエンドです。
 
@@ -58,7 +62,7 @@ https://zenn.dev/my_vision/articles/37ea494a629590
 ### 主な技術
 
 - FW: Ruby on Rails
-- DB: RDS / PostgreSQL
+- DB: Aurora / PostgreSQL
 - 非同期ジョブ: Sidekiq
   - スケジュールジョブも利用
 - サーバ: ECS / Fargate
@@ -86,7 +90,7 @@ staging / local どちらも、そのデータを元に開発を進めること�
 
 ![frontend](https://storage.googleapis.com/zenn-user-upload/58d0242c116d-20251217.png)
 
-主に Next.js を使っています。InVision のほかに、各ブランドのメディアサイトも管理しています。
+主に Next.js を使っています。InVision のほかに、各ブランドのメディアサイトや企業向け・求職者向け管理画面も開発しています。
 
 CSR とメディアの一部で ISR を使っています。
 ユーザー体験・表示速度が重要な応募フォームには Astro を使い、バンドルサイズなども最適化しています。
@@ -114,11 +118,24 @@ https://turborepo.com/
 
 https://zenn.dev/my_vision/articles/8713fc4fde965c
 
-Next.js・React は来月に srkw さんが最新まで上げてくれます！
+## モバイルアプリ
 
-## AI バックエンド
+![mobile app](https://static.zenn.studio/user-upload/58d3282717fe-20260812.png)
 
-![ai backend](https://storage.googleapis.com/zenn-user-upload/ed3a00942ff2-20251223.png)
+2026 年 07 月に転職したい方向けのモバイルアプリをリリースしました。
+
+React Native と Expo / EAS を使い、クロスプラットフォームで開発しています。
+
+### 主な技術
+
+- FW: React Native / Expo
+- GraphQL Client: Apollo / graphql-codegen
+- ユニットテスト: vitest
+- E2E: Maestro
+
+## AI API
+
+![ai api](https://storage.googleapis.com/zenn-user-upload/ed3a00942ff2-20251223.png)
 
 書類不備のチェックや求人のマッチング精度を上げるための構造化など、さまざまな AI Agents が動いています。
 
@@ -132,13 +149,32 @@ API として InVision から呼び出したり、ロングタイムになりが
 - AI: Azure / OpenAI (ChatGPT)
 - サーバ: ECS / Fargate
 - DB: RDS / PostgreSQL
-  - Prefect の状態管理
+
+## AI Chat API
+
+![ai chat api](https://static.zenn.studio/user-upload/2a5f12561ac9-20260812.png)
+
+AI チャットアシスタントとして、担当候補者や求人のデータを AI に読ませながら相談・文書生成できる機能を作っています。
+
+チャット特有のストリーミング処理などは Vercel AI SDK を使い、Hono のバックエンド側では Tool Calling や添付ファイルの読み取りなどを行っています。
+
+必要な情報は Tool Calling を通して rails のバックエンドから取得する形になっており、チャットマイクロサービスとして運用しています。
+
+### 主な技術
+
+- FW: Hono
+- Chat: Vercel AI SDK
+- AI: OpenAI (ChatGPT)
+- サーバ: ECS / Fargate
+- DB: Aurora / PostgreSQL
+
+https://ai-sdk.dev/
 
 ## データ分析基盤
 
-![data platform](https://storage.googleapis.com/zenn-user-upload/08d3b903bf9d-20251216.png)
+![data platform](https://static.zenn.studio/user-upload/9da4b6b3577b-20260812.png)
 
-- PostgreSQL → Embulk → BigQuery (生データ)→ dbt → BigQuery (分析用)
+- Aurora → RDS Snapshot → S3(Parquet) → Storage Transfer Service → GCS(Parquet) → BigQuery(raw) → dbt → BigQuery(分析用テーブル)
 - Fluentd (ログ) → BigQuery
 
 のような流れで BigQuery にデータを集約しています。KPI モニタリングやマーケ分析として活用しています。
@@ -152,7 +188,7 @@ API として InVision から呼び出したり、ロングタイムになりが
 
 - CI/CD: GitHub Actions
 
-デプロイの流れは Git Flow を採用しており、1 日に 1 回デプロイしています。
+デプロイの流れは Git Flow を採用しており、1 日に 3 回デプロイしています。
 
 - feature/\* → develop(staging)→ main(production)
 
@@ -176,7 +212,11 @@ API として InVision から呼び出したり、ロングタイムになりが
 全エンジニアが Claude Code をゴリゴリ使って開発しています。
 Notion 上で PRD / DesignDocs を管理しているため、Notion / Figma の MCP を使って連携し、要件定義から実装まで Claude Code を有効活用して開発を進めています。
 
-また、現在はバックエンド・フロントエンドともにリポジトリが別ですが、モノレポにすることで両方の変更を一括で行えるようにモノレポへ移行中です。
+また、現在はバックエンド・フロントエンドすべてがモノレポになっており、Claude Code での開発が捗っています！
+
+https://zenn.dev/my_vision/articles/d8f7258ebd9eb4
+
+https://zenn.dev/my_vision/articles/f49b33b4036078
 
 ## まとめ
 
