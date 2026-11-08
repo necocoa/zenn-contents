@@ -102,7 +102,7 @@ IDE のために Sprockets を有効にするのは微妙な気がするため�
 
 :::message
 
-GraphiQL は Facebook 製ですが、Prisma 製の [GraphQL Playground](https://github.com/graphql/graphql-playground) や Apollo 製の [Apollo Studio](https://www.apollographql.com/docs/studio/) など GraphQL を効率的に開発するツールがどんどん出てきているようです。
+GraphiQL は Facebook 製ですが、Prisma 製の[GraphQL Playground](https://github.com/graphql/graphql-playground)や Apollo 製の[Apollo Studio](https://www.apollographql.com/docs/studio/)など GraphQL を効率的に開発するツールがどんどん出てきているようです。
 GraphiQL しか使ったことがなかったので、ほか IDE も使ってみようと思います。
 
 :::
@@ -191,7 +191,7 @@ end
 $ bin/rails s
 ```
 
-http://localhost:3000/graphiql 以下の画面が表示されれば OK です。
+http://localhost:3000/graphiql以下の画面が表示されれば OK です。
 
 ![](https://storage.googleapis.com/zenn-user-upload/ki3ahslz7m0fs425p6ytevf2w834)
 
