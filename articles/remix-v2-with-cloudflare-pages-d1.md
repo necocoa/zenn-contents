@@ -155,7 +155,7 @@ To run an edge preview session for your Worker, use wrangler dev --remote
 [REMIX DEV] c781a4f8 ready
 ```
 
-http://0.0.0.0:8788 を開くと以下のような表示になれば OK です。
+http://0.0.0.0:8788を開くと以下のような表示になれば OK です。
 
 ![](https://storage.googleapis.com/zenn-user-upload/4fdb38d12fcf-20231002.jpg =500x)
 

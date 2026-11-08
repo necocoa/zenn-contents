@@ -127,7 +127,7 @@ $ nest start
 
 <!-- textlint-enable -->
 
-[http://localhost:3000](http://localhost:3000) を開いて Hello World! が表示されたら完了です。
+[http://localhost:3000](http://localhost:3000)を開いて Hello World! が表示されたら完了です。
 
 ## Docker 環境を作る
 
@@ -253,7 +253,7 @@ docker build --tag nestjs-docker .
 docker run -d -p 3000:3000 --name nestjs-docker nestjs-docker
 ```
 
-[http://localhost:3000](http://localhost:3000) を開いて Hello World! が表示されたら成功です。
+[http://localhost:3000](http://localhost:3000)を開いて Hello World! が表示されたら成功です。
 
 ### 削減対策をしない slim 環境
 

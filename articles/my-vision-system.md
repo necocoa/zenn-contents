@@ -35,10 +35,11 @@ _会社紹介資料から_
 <!-- textlint-disable prh -->
 
 - バックエンド: Ruby on Rails
-- フロントエンド: Next.js / Astro
-- モバイルアプリ: React Native / Expo
-- AI バックエンド: FastAPI / Prefect
-- インフラ: AWS ECS / Aurora、一部 GCP
+- フロントエンド: Next.js/Astro
+- モバイルアプリ: React Native/Expo
+- AI バックエンド: FastAPI/Prefect
+- インフラ: AWS ECS/Aurora、一部 GCP
+
 <!-- textlint-enabled -->
 
 ファーストコミットが 2023 年 3 月と新しめのアプリケーションになっています。
@@ -62,12 +63,12 @@ https://zenn.dev/my_vision/articles/37ea494a629590
 ### 主な技術
 
 - FW: Ruby on Rails
-- DB: Aurora / PostgreSQL
+- DB: Aurora/PostgreSQL
 - 非同期ジョブ: Sidekiq
   - スケジュールジョブも利用
-- サーバ: ECS / Fargate
+- サーバ: ECS/Fargate
 - 検索: OpenSearch
-- KVS: ElastiCache / Redis
+- KVS: ElastiCache/Redis
   - キャッシュ・メッセージキュー・GraphQL Subscription (Action Cable) のコネクション管理
 - 認証: Firebase Authentication
 - Storage: Cloud Storage for Firebase
@@ -82,7 +83,7 @@ https://zenn.dev/my_vision/articles/37ea494a629590
 開発環境で気に入っているのは、マスクされた本番同等のデータがローカルで扱える点です。
 データをマスクして dump し S3 にアップしており、任意のタイミングでそのデータに入れ替えることができます。
 
-staging / local どちらも、そのデータを元に開発を進めることができるため、UX の確認やデバッグが非常にラクです。
+staging/local どちらも、そのデータを元に開発を進めることができるため、UX の確認やデバッグが非常にラクです。
 
 また、Ruby・Rails・Gem などほぼ最新になっており、アップデート業も進んでいます。
 
@@ -99,15 +100,15 @@ https://zenn.dev/my_vision/articles/f3dcb3e5f04b21
 
 ### 主な技術
 
-- FW: Next.js / Astro
+- FW: Next.js/Astro
 - インフラ: Vercel
-- GraphQL Client: Apollo / graphql-codegen
+- GraphQL Client: Apollo/graphql-codegen
 - ユニットテスト: vitest
 - E2E: Playwright
 
 ### 開発環境
 
-InVision と各ブランドメディアの Next.js / Astro がモノレポ構成になっています。
+InVision と各ブランドメディアの Next.js/Astro がモノレポ構成になっています。
 モノレポ管理として Turborepo を入れています。
 
 全フロントの立ち上げや GraphQL のスキーマ型生成の codegen 実行だったり lint などを並列かつ、キャッシュも使いながら実行できるため、高速でとても快適です。
@@ -124,12 +125,12 @@ https://zenn.dev/my_vision/articles/8713fc4fde965c
 
 2026 年 07 月に転職したい方向けのモバイルアプリをリリースしました。
 
-React Native と Expo / EAS を使い、クロスプラットフォームで開発しています。
+React Native と Expo/EAS を使い、クロスプラットフォームで開発しています。
 
 ### 主な技術
 
-- FW: React Native / Expo
-- GraphQL Client: Apollo / graphql-codegen
+- FW: React Native/Expo
+- GraphQL Client: Apollo/graphql-codegen
 - ユニットテスト: vitest
 - E2E: Maestro
 
@@ -146,9 +147,9 @@ API として InVision から呼び出したり、ロングタイムになりが
 
 - FW: FastAPI
 - Workflow: Prefect
-- AI: Azure / OpenAI (ChatGPT)
-- サーバ: ECS / Fargate
-- DB: RDS / PostgreSQL
+- AI: Azure/OpenAI (ChatGPT)
+- サーバ: ECS/Fargate
+- DB: RDS/PostgreSQL
 
 ## AI Chat API
 
@@ -165,8 +166,8 @@ AI チャットアシスタントとして、担当候補者や求人のデー�
 - FW: Hono
 - Chat: Vercel AI SDK
 - AI: OpenAI (ChatGPT)
-- サーバ: ECS / Fargate
-- DB: Aurora / PostgreSQL
+- サーバ: ECS/Fargate
+- DB: Aurora/PostgreSQL
 
 https://ai-sdk.dev/
 
@@ -210,7 +211,7 @@ https://ai-sdk.dev/
 - ドキュメント: Notion
 
 全エンジニアが Claude Code をゴリゴリ使って開発しています。
-Notion 上で PRD / DesignDocs を管理しているため、Notion / Figma の MCP を使って連携し、要件定義から実装まで Claude Code を有効活用して開発を進めています。
+Notion 上で PRD/DesignDocs を管理しているため、Notion/Figma の MCP を使って連携し、要件定義から実装まで Claude Code を有効活用して開発を進めています。
 
 また、現在はバックエンド・フロントエンドすべてがモノレポになっており、Claude Code での開発が捗っています！
 
